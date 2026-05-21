@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -73,9 +72,9 @@
             z-index: 50 !important;
             filter: drop-shadow(0 0 12px rgba(255,255,255,1)) !important;
         }
-        /* Smooth transition for dynamic height resizing */
+        /* Smooth transition for dynamic height and width resizing */
         #treeContainer {
-            transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), max-width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
     </style>
 </head>
@@ -291,7 +290,7 @@
                     🎯 <strong>Modo Posicionamento Ativo:</strong> Clique em qualquer galho da árvore abaixo para escolher onde pendurar seu enfeite!
                 </div>
 
-                <!-- O Conteiner da Árvore Física (Com transição de altura) -->
+                <!-- O Conteiner da Árvore Física (Com transição de altura e largura máxima equilibrada) -->
                 <div id="treeContainer" class="relative w-full max-w-[420px] cursor-pointer bg-slate-900/20 rounded-2xl select-none" style="height: 460px;">
                     
                     <!-- Div do SVG Dinâmico da Árvore -->
@@ -599,6 +598,7 @@
         let currentTreeData = null;
         let ornamentsList = [];
         let isPlacementActive = false;
+        let currentActiveTiers = 3; // Mantido global para cálculo de toque
 
         // Dom Elements
         const loadingScreen = document.getElementById('loadingScreen');
@@ -693,10 +693,10 @@
 
                     ornamentsList = allOrnaments.filter(o => o.treeId === currentTreeId);
                     
-                    // Atualiza contadores visuais
+                    // Updates counts
                     document.getElementById('ornamentCountSpan').innerText = ornamentsList.length;
                     
-                    // Desenha o SVG dinâmico baseado nos enfeites e renderiza-os
+                    // Renders dynamic responsive layers and places ornaments
                     renderTreeHeaderAndTheme(currentTreeData, ornamentsList.length);
                     renderOrnamentsOnTree(ornamentsList);
                 }, (error) => {
@@ -779,18 +779,25 @@
             const baseTiers = 3;
             const growthTiers = Math.floor(ornamentsCount / 8);
             const activeTiers = Math.min(8, baseTiers + growthTiers); // No máximo 8 camadas
+            currentActiveTiers = activeTiers; // Atualiza variável global para as validações físicas de toque
             
             document.getElementById('treeLevelSpan').innerText = (activeTiers - baseTiers + 1);
 
-            // Ajusta a altura física do contêiner proporcionalmente ao tamanho de camadas dela
+            // Ajusta o tamanho físico proporcionalmente: cresce tanto na altura quanto nos lados (max-width)
             const treeContainer = document.getElementById('treeContainer');
-            const targetHeight = 400 + (activeTiers * 40); // Cresce dinamicamente de 40px em 40px
+            
+            // Crescimento Vertical (Altura)
+            const targetHeight = 400 + (activeTiers * 40); 
             treeContainer.style.height = `${targetHeight}px`;
+
+            // Crescimento Lateral (Largura Máxima do Contêiner proporcional)
+            const targetMaxWidth = 360 + (activeTiers * 25);
+            treeContainer.style.maxWidth = `${targetMaxWidth}px`;
 
             const glow = document.getElementById('themeLightGlow');
             const svgWrapper = document.getElementById('treeSvgWrapper');
 
-            // Gera o SVG Dinâmico do Tema com base no número de camadas calculado
+            // Gera o SVG Dinâmico com largura da base ajustável de acordo com o crescimento das camadas
             let svgContent = '';
             
             if (tree.theme === 'christmas') {
@@ -807,10 +814,9 @@
             svgWrapper.innerHTML = svgContent;
         }
 
-        // --- GERADORES DE SVGs MULTI-CAMADAS DINÂMICOS ---
+        // --- GERADORES DE SVGs MULTI-CAMADAS DINÂMICOS COM CRESCIMENTO LATERAL PROPORCIONAL ---
 
         function generateChristmasSVG(tiers) {
-            // Tronco ajustável ao número de tiers
             let paths = `
                 <!-- Tronco -->
                 <rect x="46" y="105" width="8" height="15" fill="#4a2c00" rx="1"/>
@@ -818,31 +824,27 @@
                 <path d="M41 120 h18 l-3 -8 h-12 z" fill="#780000" />
             `;
 
-            // Gera camadas sobrepostas (triângulos) de baixo para cima
             const startY = 105;
             const topY = 12;
             const totalHeight = startY - topY;
             const tierHeight = totalHeight / tiers;
 
+            // Largura máxima da base da copa aumenta à medida que a árvore ganha mais tiers
+            const maxBaseWidth = 65 + (tiers * 4.5); // Cresce lateralmente 
+
             for (let i = 0; i < tiers; i++) {
                 const step = i / (tiers - 1 || 1);
                 
-                // Calcula larguras progressivas de baixo para cima
-                // Camadas de baixo são mais largas, camadas de cima são estreitas
-                const bottomWidth = 75 - (step * 45); // de 75 de largura a 30 de largura
-                const topWidth = 55 - (step * 45);
+                // Distribuição equilibrada de largura de baixo para cima
+                const bottomWidth = maxBaseWidth - (step * (maxBaseWidth - 30)); 
+                const topWidth = (maxBaseWidth - 15) - (step * (maxBaseWidth - 30));
 
                 const currentBottomY = startY - (i * tierHeight);
-                const currentTopY = startY - ((i + 1) * tierHeight) - 4; // overlap
+                const currentTopY = startY - ((i + 1) * tierHeight) - 4; 
 
                 const leftBottomX = 50 - (bottomWidth / 2);
                 const rightBottomX = 50 + (bottomWidth / 2);
-                
-                // Ponto médio de cima do triângulo parcial
-                const leftTopX = 50 - (topWidth / 2);
-                const rightTopX = 50 + (topWidth / 2);
 
-                // Alterna tons de verde para dar profundidade de galhos
                 const greenTone = i % 2 === 0 ? '#064e3b' : '#047857';
 
                 paths += `
@@ -851,7 +853,6 @@
                 `;
             }
 
-            // Luzes piscantes lineares cruzando os tiers
             paths += `
                 <path d="M50 20 Q55 45 40 60 T60 85 T35 105" fill="none" stroke="#fbbf24" stroke-width="0.6" stroke-dasharray="1.5 3" class="animate-pulse" />
                 <!-- Estrela do Topo -->
@@ -874,11 +875,12 @@
             const totalHeight = startY - topY;
             const tierHeight = totalHeight / tiers;
 
+            const maxBaseRadiusX = 32 + (tiers * 3); // Escalonamento horizontal do tema místico
+
             for (let i = 0; i < tiers; i++) {
                 const step = i / (tiers - 1 || 1);
                 
-                // Formato oval místico para cada tier
-                const radiusX = 38 - (step * 24); // de 38 a 14 de raio horizontal
+                const radiusX = maxBaseRadiusX - (step * (maxBaseRadiusX - 14)); 
                 const radiusY = (tierHeight / 2) + 6;
                 const centerY = startY - (i * tierHeight) - (radiusY / 2);
 
@@ -890,7 +892,6 @@
                 `;
             }
 
-            // Pisca-pisca neon azul e Estrela mística
             paths += `
                 <path d="M50 15 Q30 45 70 70 T35 100" fill="none" stroke="#38bdf8" stroke-width="0.75" stroke-dasharray="2 4" class="animate-pulse" />
                 <g fill="#c084fc" filter="drop-shadow(0 0 12px #c084fc)">
@@ -913,10 +914,12 @@
             const totalHeight = startY - topY;
             const tierHeight = totalHeight / tiers;
 
+            const maxBaseWidth = 56 + (tiers * 4); // Expansão lateral gradual
+
             for (let i = 0; i < tiers; i++) {
                 const step = i / (tiers - 1 || 1);
                 
-                const width = 65 - (step * 40);
+                const width = maxBaseWidth - (step * (maxBaseWidth - 25));
                 const currentBottomY = startY - (i * tierHeight);
                 const currentTopY = startY - ((i + 1) * tierHeight) - 2;
 
@@ -931,7 +934,6 @@
                 `;
             }
 
-            // Pisca-pisca estelar cintilante e grande estrela brilhante
             paths += `
                 <path d="M50 20 L28 100 M50 20 L72 100" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-dasharray="2 3" opacity="0.6"/>
                 <g fill="#fffbeb" filter="drop-shadow(0 0 15px #fef08a)">
@@ -1080,6 +1082,25 @@
             showToast("Agora, toque/clique no local desejado na árvore!", "fa-solid fa-arrow-pointer");
         });
 
+        // Função auxiliar ajustada para validar se as coordenadas do clique estão dentro do limite da árvore
+        // que agora cresce em altura (tiers) e em largura (lateralmente)
+        function isValidTreePosition(x, y, theme, tiers) {
+            // Copa da árvore começa em y=8 (abaixo da estrela) e vai até y=105 (início do vaso)
+            if (y < 8 || y > 105) return false;
+
+            // Define a largura máxima adaptável de acordo com as camadas de crescimento (tiers)
+            let maxHalfWidth = (65 + (tiers * 4.5)) / 2; // Christmas base
+            if (theme === 'enchanted') maxHalfWidth = (32 + (tiers * 3));
+            if (theme === 'golden') maxHalfWidth = (56 + (tiers * 4)) / 2;
+
+            // Interpolação linear da copa triangular (topo y=8, base y=105)
+            const t = (y - 8) / (105 - 8);
+            const currentHalfWidth = 5 + (maxHalfWidth - 5) * t;
+
+            // O centro é x = 50%
+            return (x >= 50 - currentHalfWidth && x <= 50 + currentHalfWidth);
+        }
+
         // Click handler on actual Tree physical canvas bounds
         document.getElementById('treeContainer').addEventListener('click', async (e) => {
             if (!isPlacementActive) return;
@@ -1087,6 +1108,15 @@
             const rect = e.currentTarget.getBoundingClientRect();
             const xVal = ((e.clientX - rect.left) / rect.width) * 100;
             const yVal = ((e.clientY - rect.top) / rect.height) * 100;
+
+            const theme = currentTreeData ? currentTreeData.theme : 'christmas';
+            const tiers = currentActiveTiers; // Lê as camadas atuais calculadas em tempo real
+
+            // Validação de segurança adaptada para crescimento dinâmico vertical/lateral
+            if (!isValidTreePosition(xVal, yVal, theme, tiers)) {
+                showToast("Por favor, clique nos galhos da árvore para pendurar seu enfeite!", "fa-solid fa-tree");
+                return; // Mantém o estado ativo
+            }
 
             const boundedX = Math.min(Math.max(xVal, 5), 95);
             const boundedY = Math.min(Math.max(yVal, 10), 90);
@@ -1239,7 +1269,7 @@
                     revealMode: newRevealMode
                 });
 
-                showToast("Configurações da árvore atualizadas!", "fa-solid fa-circle-check");
+                showToast("Configurações da árvore updated!", "fa-solid fa-circle-check");
                 closeAllModals();
 
             } catch (err) {
