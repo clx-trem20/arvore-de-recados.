@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -71,6 +72,10 @@
             transform: scale(1.3) translate(-38%, -38%) !important;
             z-index: 50 !important;
             filter: drop-shadow(0 0 12px rgba(255,255,255,1)) !important;
+        }
+        /* Smooth transition for dynamic height resizing */
+        #treeContainer {
+            transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
     </style>
 </head>
@@ -225,12 +230,20 @@
             
             <!-- Painel de Informações da Árvore e Temporizador -->
             <div id="treeCardHeader" class="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
-                <div class="text-center md:text-left space-y-1">
+                <div class="text-center md:text-left space-y-1 flex-1">
                     <span class="text-xs bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1 rounded-full inline-block font-semibold">
                         Árvore de Recados de
                     </span>
                     <h2 id="displayTreeName" class="serif-title text-2xl md:text-3xl font-extrabold text-yellow-400">Carregando...</h2>
-                    <p class="text-slate-400 text-xs">Clique na árvore para pendurar seus sentimentos em formato de enfeite.</p>
+                    <div class="flex items-center justify-center md:justify-start gap-2 text-xs text-slate-400 mt-1">
+                        <span class="text-emerald-400 font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-layer-group"></i> Nível: <span id="treeLevelSpan">1</span>
+                        </span>
+                        <span>•</span>
+                        <span class="flex items-center gap-1">
+                            <i class="fa-solid fa-gift"></i> Enfeites: <span id="ornamentCountSpan">0</span>
+                        </span>
+                    </div>
                 </div>
 
                 <!-- Painel do Cronômetro -->
@@ -278,70 +291,12 @@
                     🎯 <strong>Modo Posicionamento Ativo:</strong> Clique em qualquer galho da árvore abaixo para escolher onde pendurar seu enfeite!
                 </div>
 
-                <!-- O Conteiner da Árvore Física -->
-                <div id="treeContainer" class="relative w-full max-w-[420px] aspect-[4/5] cursor-pointer bg-slate-900/20 rounded-2xl select-none">
+                <!-- O Conteiner da Árvore Física (Com transição de altura) -->
+                <div id="treeContainer" class="relative w-full max-w-[420px] cursor-pointer bg-slate-900/20 rounded-2xl select-none" style="height: 460px;">
                     
-                    <!-- SVG Ilustrativo da Árvore baseado no Tema selecionado -->
-                    <div id="treeSvgWrapper" class="w-full h-full flex items-center justify-center p-4">
-                        <!-- Christmas Tree Base SVG -->
-                        <svg id="svgChristmas" class="w-full h-full text-emerald-800" viewBox="0 0 100 120" fill="currentColor">
-                            <!-- Tronco -->
-                            <rect x="46" y="105" width="8" height="15" fill="#4a2c00" rx="1"/>
-                            <!-- Vaso -->
-                            <path d="M42 120 h16 l-3 -8 h-10 z" fill="#780000" />
-                            <!-- Folhagem Base -->
-                            <path d="M50 10 L15 105 h70 Z" fill="#064e3b" filter="drop-shadow(0 0 10px rgba(6,78,59,0.3))"/>
-                            <!-- Folhas Detalhe 2 -->
-                            <path d="M50 25 L20 95 h60 Z" fill="#047857"/>
-                            <!-- Folhas Detalhe 3 -->
-                            <path d="M50 40 L25 80 h50 Z" fill="#059669"/>
-                            <!-- Folhas Detalhe 4 -->
-                            <path d="M50 55 L32 65 h36 Z" fill="#10b981"/>
-                            
-                            <!-- Pisca-pisca Lines -->
-                            <path d="M50 20 Q55 35 40 45 T65 65 T35 85 T60 100" fill="none" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="1 3" class="animate-pulse" />
-                            
-                            <!-- Estrela do Topo -->
-                            <g fill="#f59e0b" filter="drop-shadow(0 0 8px #f59e0b)">
-                                <path d="M50 2 L52 8 L58 10 L52 12 L50 18 L48 12 L42 10 L48 8 Z" />
-                            </g>
-                        </svg>
-
-                        <!-- Enchanted Tree SVG -->
-                        <svg id="svgEnchanted" class="w-full h-full text-purple-800 hidden" viewBox="0 0 100 120" fill="currentColor">
-                            <!-- Tronco Místico -->
-                            <path d="M44 105 Q47 115 42 120 h16 Q53 115 56 105 z" fill="#2d1b4e"/>
-                            <!-- Folhagem Principal Espiral -->
-                            <path d="M50 10 C15 70 20 105 50 105 C80 105 85 70 50 10" fill="#3b0764" filter="drop-shadow(0 0 15px rgba(59,7,100,0.4))"/>
-                            <path d="M50 25 C25 70 30 95 50 95 C70 95 75 70 50 25" fill="#581c87"/>
-                            <path d="M50 40 C35 70 38 85 50 85 C62 85 65 70 50 40" fill="#701a75"/>
-                            <path d="M50 55 C42 70 45 78 50 78 C55 78 58 70 50 55" fill="#a21caf"/>
-                            <!-- Pisca pisca azul -->
-                            <path d="M50 15 C30 50 70 70 50 100" fill="none" stroke="#38bdf8" stroke-width="0.75" stroke-dasharray="1 4" class="animate-pulse" />
-                            <!-- Estrela do Topo Encantada -->
-                            <g fill="#c084fc" filter="drop-shadow(0 0 12px #c084fc)">
-                                <circle cx="50" cy="10" r="4"/>
-                                <path d="M50 2 L50 18 M42 10 L58 10" stroke="#c084fc" stroke-width="1"/>
-                            </g>
-                        </svg>
-
-                        <!-- Golden / Estelar SVG -->
-                        <svg id="svgGolden" class="w-full h-full text-amber-500 hidden" viewBox="0 0 100 120" fill="currentColor">
-                            <!-- Tronco Dourado -->
-                            <rect x="47" y="100" width="6" height="20" fill="#78350f" rx="1"/>
-                            <!-- Cone Dourado de Luxo -->
-                            <path d="M50 12 L20 100 h60 Z" fill="#78350f" />
-                            <path d="M50 15 L22 97 h56 Z" fill="#b45309" filter="drop-shadow(0 0 10px rgba(180,83,9,0.4))" />
-                            <path d="M50 25 L28 92 h44 Z" fill="#d97706" />
-                            <path d="M50 40 L34 85 h32 Z" fill="#f59e0b" />
-                            <path d="M50 55 L40 75 h20 Z" fill="#fbbf24" />
-                            <!-- Pisca pisca cintilante -->
-                            <path d="M50 20 L25 90 M50 20 L75 90 M50 40 L35 90 M50 40 L65 90" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-dasharray="2 2" />
-                            <!-- Grande Estrela Estelar -->
-                            <g fill="#fffbeb" filter="drop-shadow(0 0 15px #fef08a)">
-                                <polygon points="50,2 53,10 61,10 54,15 57,23 50,18 43,23 46,15 39,10 47,10" />
-                            </g>
-                        </svg>
+                    <!-- Div do SVG Dinâmico da Árvore -->
+                    <div id="treeSvgWrapper" class="w-full h-full p-4">
+                        <!-- O SVG será injetado e redesenhado dinamicamente via JS baseado no número de enfeites -->
                     </div>
 
                     <!-- Div de Ornatos Colocados via JS -->
@@ -669,10 +624,8 @@
         // ==================== AUTH & ROUTING ====================
         
         window.onload = async () => {
-            // Start Snow Animation
             initSnow();
 
-            // Authentication Step with fallback (STRICT RULE 3)
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     try {
@@ -689,7 +642,6 @@
                 showToast("Erro ao conectar à rede mágica. Tente atualizar a página.", "fa-solid fa-triangle-exclamation");
             }
 
-            // Track Auth state change
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     currentUser = user;
@@ -698,7 +650,6 @@
             });
         };
 
-        // Determine which screen/tree is loaded based on query params
         function routeView() {
             const params = new URLSearchParams(window.location.search);
             const treeId = params.get('tree');
@@ -707,7 +658,6 @@
                 currentTreeId = treeId;
                 loadTree(treeId);
             } else {
-                // EXCLUSIVO: Se o usuário não tem o link no parâmetro, exibe apenas a tela de CRIAÇÃO
                 loadingScreen.classList.add('hidden');
                 homeScreen.classList.remove('hidden');
                 treeScreen.classList.add('hidden');
@@ -720,7 +670,6 @@
             if (!currentUser) return;
             
             try {
-                // Fetch Tree Header Details (STRICT RULE 2 - Keep it simple)
                 const treeDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'trees', treeId);
                 const treeDocSnap = await getDoc(treeDocRef);
 
@@ -733,9 +682,7 @@
                 }
 
                 currentTreeData = treeDocSnap.data();
-                renderTreeHeaderAndTheme(currentTreeData);
 
-                // Setup realtime listener for ornaments of this specific tree
                 const ornamentsRef = getOrnamentsCollection();
                 
                 onSnapshot(ornamentsRef, (snapshot) => {
@@ -745,24 +692,27 @@
                     });
 
                     ornamentsList = allOrnaments.filter(o => o.treeId === currentTreeId);
+                    
+                    // Atualiza contadores visuais
+                    document.getElementById('ornamentCountSpan').innerText = ornamentsList.length;
+                    
+                    // Desenha o SVG dinâmico baseado nos enfeites e renderiza-os
+                    renderTreeHeaderAndTheme(currentTreeData, ornamentsList.length);
                     renderOrnamentsOnTree(ornamentsList);
                 }, (error) => {
                     console.error("Error fetching ornaments:", error);
                 });
 
-                // Listen in real-time to tree configurations (including real-time theme / date changes!)
                 onSnapshot(treeDocRef, (snap) => {
                     if (snap.exists()) {
                         currentTreeData = snap.data();
-                        renderTreeHeaderAndTheme(currentTreeData);
+                        renderTreeHeaderAndTheme(currentTreeData, ornamentsList.length);
                         updateCountdown();
                     }
                 });
 
-                // Start Live Countdown Thread
                 setInterval(updateCountdown, 1000);
 
-                // Switch UI Screens
                 loadingScreen.classList.add('hidden');
                 homeScreen.classList.add('hidden');
                 treeScreen.classList.remove('hidden');
@@ -790,7 +740,6 @@
                 return;
             }
 
-            // Create unique alphanumeric ID
             const newTreeId = Math.random().toString(36).substring(2, 10);
             const revealDateMs = new Date(revealStr).getTime();
 
@@ -821,28 +770,176 @@
             }
         });
 
-        // ==================== RENDERING & THEMES ====================
+        // ==================== DYNAMIC SVG GENERATOR & GROWING LOGIC ====================
 
-        function renderTreeHeaderAndTheme(tree) {
+        function renderTreeHeaderAndTheme(tree, ornamentsCount = 0) {
             document.getElementById('displayTreeName').innerText = `Árvore de ${tree.name}`;
             
-            // Hide all SVG elements
-            document.getElementById('svgChristmas').classList.add('hidden');
-            document.getElementById('svgEnchanted').classList.add('hidden');
-            document.getElementById('svgGolden').classList.add('hidden');
+            // Lógica de crescimento da árvore: a cada 8 enfeites ela cresce uma camada (Nível)
+            const baseTiers = 3;
+            const growthTiers = Math.floor(ornamentsCount / 8);
+            const activeTiers = Math.min(8, baseTiers + growthTiers); // No máximo 8 camadas
+            
+            document.getElementById('treeLevelSpan').innerText = (activeTiers - baseTiers + 1);
+
+            // Ajusta a altura física do contêiner proporcionalmente ao tamanho de camadas dela
+            const treeContainer = document.getElementById('treeContainer');
+            const targetHeight = 400 + (activeTiers * 40); // Cresce dinamicamente de 40px em 40px
+            treeContainer.style.height = `${targetHeight}px`;
 
             const glow = document.getElementById('themeLightGlow');
+            const svgWrapper = document.getElementById('treeSvgWrapper');
 
+            // Gera o SVG Dinâmico do Tema com base no número de camadas calculado
+            let svgContent = '';
+            
             if (tree.theme === 'christmas') {
-                document.getElementById('svgChristmas').classList.remove('hidden');
                 glow.className = "absolute w-72 h-72 rounded-full bg-emerald-500/15 blur-[90px] -z-10 top-1/4";
+                svgContent = generateChristmasSVG(activeTiers);
             } else if (tree.theme === 'enchanted') {
-                document.getElementById('svgEnchanted').classList.remove('hidden');
                 glow.className = "absolute w-72 h-72 rounded-full bg-purple-500/15 blur-[90px] -z-10 top-1/4";
+                svgContent = generateEnchantedSVG(activeTiers);
             } else if (tree.theme === 'golden') {
-                document.getElementById('svgGolden').classList.remove('hidden');
                 glow.className = "absolute w-72 h-72 rounded-full bg-amber-500/15 blur-[90px] -z-10 top-1/4";
+                svgContent = generateGoldenSVG(activeTiers);
             }
+
+            svgWrapper.innerHTML = svgContent;
+        }
+
+        // --- GERADORES DE SVGs MULTI-CAMADAS DINÂMICOS ---
+
+        function generateChristmasSVG(tiers) {
+            // Tronco ajustável ao número de tiers
+            let paths = `
+                <!-- Tronco -->
+                <rect x="46" y="105" width="8" height="15" fill="#4a2c00" rx="1"/>
+                <!-- Vaso -->
+                <path d="M41 120 h18 l-3 -8 h-12 z" fill="#780000" />
+            `;
+
+            // Gera camadas sobrepostas (triângulos) de baixo para cima
+            const startY = 105;
+            const topY = 12;
+            const totalHeight = startY - topY;
+            const tierHeight = totalHeight / tiers;
+
+            for (let i = 0; i < tiers; i++) {
+                const step = i / (tiers - 1 || 1);
+                
+                // Calcula larguras progressivas de baixo para cima
+                // Camadas de baixo são mais largas, camadas de cima são estreitas
+                const bottomWidth = 75 - (step * 45); // de 75 de largura a 30 de largura
+                const topWidth = 55 - (step * 45);
+
+                const currentBottomY = startY - (i * tierHeight);
+                const currentTopY = startY - ((i + 1) * tierHeight) - 4; // overlap
+
+                const leftBottomX = 50 - (bottomWidth / 2);
+                const rightBottomX = 50 + (bottomWidth / 2);
+                
+                // Ponto médio de cima do triângulo parcial
+                const leftTopX = 50 - (topWidth / 2);
+                const rightTopX = 50 + (topWidth / 2);
+
+                // Alterna tons de verde para dar profundidade de galhos
+                const greenTone = i % 2 === 0 ? '#064e3b' : '#047857';
+
+                paths += `
+                    <!-- Camada ${i + 1} -->
+                    <path d="M50 ${currentTopY} L${leftBottomX} ${currentBottomY} L${rightBottomX} ${currentBottomY} Z" fill="${greenTone}" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.15))"/>
+                `;
+            }
+
+            // Luzes piscantes lineares cruzando os tiers
+            paths += `
+                <path d="M50 20 Q55 45 40 60 T60 85 T35 105" fill="none" stroke="#fbbf24" stroke-width="0.6" stroke-dasharray="1.5 3" class="animate-pulse" />
+                <!-- Estrela do Topo -->
+                <g fill="#f59e0b" filter="drop-shadow(0 0 8px #f59e0b)">
+                    <path d="M50 4 L52.5 10 L59 10 L54 13.5 L56 19.5 L50 15.5 L44 19.5 L46 13.5 L41 10 L47.5 10 Z" />
+                </g>
+            `;
+
+            return `<svg class="w-full h-full text-emerald-800" viewBox="0 0 100 125" fill="currentColor">${paths}</svg>`;
+        }
+
+        function generateEnchantedSVG(tiers) {
+            let paths = `
+                <!-- Tronco Místico -->
+                <path d="M44 105 Q47 115 41 121 h18 Q53 115 56 105 z" fill="#2d1b4e"/>
+            `;
+
+            const startY = 105;
+            const topY = 15;
+            const totalHeight = startY - topY;
+            const tierHeight = totalHeight / tiers;
+
+            for (let i = 0; i < tiers; i++) {
+                const step = i / (tiers - 1 || 1);
+                
+                // Formato oval místico para cada tier
+                const radiusX = 38 - (step * 24); // de 38 a 14 de raio horizontal
+                const radiusY = (tierHeight / 2) + 6;
+                const centerY = startY - (i * tierHeight) - (radiusY / 2);
+
+                const purpleTone = i % 2 === 0 ? '#3b0764' : '#581c87';
+
+                paths += `
+                    <!-- Camada Mística ${i+1} -->
+                    <ellipse cx="50" cy="${centerY}" rx="${radiusX}" ry="${radiusY}" fill="${purpleTone}" filter="drop-shadow(0 2px 5px rgba(0,0,0,0.25))"/>
+                `;
+            }
+
+            // Pisca-pisca neon azul e Estrela mística
+            paths += `
+                <path d="M50 15 Q30 45 70 70 T35 100" fill="none" stroke="#38bdf8" stroke-width="0.75" stroke-dasharray="2 4" class="animate-pulse" />
+                <g fill="#c084fc" filter="drop-shadow(0 0 12px #c084fc)">
+                    <circle cx="50" cy="8" r="4.5"/>
+                    <path d="M50 1 L50 15 M42 8 L58 8" stroke="#c084fc" stroke-width="1"/>
+                </g>
+            `;
+
+            return `<svg class="w-full h-full text-purple-800" viewBox="0 0 100 125" fill="currentColor">${paths}</svg>`;
+        }
+
+        function generateGoldenSVG(tiers) {
+            let paths = `
+                <!-- Tronco Dourado -->
+                <rect x="47" y="103" width="6" height="18" fill="#78350f" rx="1"/>
+            `;
+
+            const startY = 105;
+            const topY = 15;
+            const totalHeight = startY - topY;
+            const tierHeight = totalHeight / tiers;
+
+            for (let i = 0; i < tiers; i++) {
+                const step = i / (tiers - 1 || 1);
+                
+                const width = 65 - (step * 40);
+                const currentBottomY = startY - (i * tierHeight);
+                const currentTopY = startY - ((i + 1) * tierHeight) - 2;
+
+                const leftX = 50 - (width / 2);
+                const rightX = 50 + (width / 2);
+
+                const amberTone = i % 2 === 0 ? '#b45309' : '#d97706';
+
+                paths += `
+                    <!-- Camada Dourada ${i+1} -->
+                    <polygon points="50,${currentTopY} ${leftX},${currentBottomY} ${rightX},${currentBottomY}" fill="${amberTone}" filter="drop-shadow(0 2px 6px rgba(180,83,9,0.3))"/>
+                `;
+            }
+
+            // Pisca-pisca estelar cintilante e grande estrela brilhante
+            paths += `
+                <path d="M50 20 L28 100 M50 20 L72 100" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-dasharray="2 3" opacity="0.6"/>
+                <g fill="#fffbeb" filter="drop-shadow(0 0 15px #fef08a)">
+                    <polygon points="50,1 53,9 61,9 54,14 57,22 50,17 43,22 46,14 39,9 47,9" />
+                </g>
+            `;
+
+            return `<svg class="w-full h-full text-amber-500" viewBox="0 0 100 125" fill="currentColor">${paths}</svg>`;
         }
 
         // Renders visual ornaments absolutely inside the tree wrapper based on percentages
@@ -911,7 +1008,6 @@
 
         function isRevealed() {
             if (!currentTreeData) return false;
-            // Se o modo de visibilidade for definido como sempre visível, ignora o prazo limite
             if (currentTreeData.revealMode === 'unlocked') {
                 return true;
             }
@@ -933,7 +1029,6 @@
                 countdownTimer.classList.add('hidden');
                 revealedStatusBanner.classList.remove('hidden');
                 
-                // Exibe label diferente caso seja um mural permanentemente aberto
                 if (currentTreeData.revealMode === 'unlocked') {
                     revealedStatusBanner.innerHTML = '<i class="fa-solid fa-lock-open"></i> MURAL DE RECADOS ABERTO!';
                 } else {
@@ -989,19 +1084,15 @@
         document.getElementById('treeContainer').addEventListener('click', async (e) => {
             if (!isPlacementActive) return;
 
-            // Get exact bounding coordinates of clicking point inside parent tree
             const rect = e.currentTarget.getBoundingClientRect();
             const xVal = ((e.clientX - rect.left) / rect.width) * 100;
             const yVal = ((e.clientY - rect.top) / rect.height) * 100;
 
-            // Simple safety constraints so coordinates don't map outside visible zones
             const boundedX = Math.min(Math.max(xVal, 5), 95);
             const boundedY = Math.min(Math.max(yVal, 10), 90);
 
-            // Complete save workflow
             isPlacementActive = false;
             
-            // Cleanup UI indicators
             document.getElementById('clickPlacementInstructions').classList.add('hidden');
             document.getElementById('treeContainer').classList.remove('ring-4', 'ring-yellow-500/50');
 
@@ -1019,14 +1110,9 @@
             };
 
             try {
-                // Save directly to public collections with exact path constraints (STRICT RULE 1)
                 await addDoc(getOrnamentsCollection(), newOrnamentObj);
-                
                 showToast("Seu enfeite foi pendurado com carinho!", "fa-solid fa-circle-check");
-                
-                // Clear the form fields for next time
                 document.getElementById('ornamentForm').reset();
-
             } catch (err) {
                 console.error("Save Ornament Error:", err);
                 showToast("Erro ao gravar enfeite. Tente novamente.", "fa-solid fa-triangle-exclamation");
@@ -1096,7 +1182,6 @@
         // ==================== INTERACTION: ADMIN PANEL ====================
 
         document.getElementById('btnOpenAdminPanel').addEventListener('click', () => {
-            // Reset state inside Modal Admin before opening
             document.getElementById('adminPinState').classList.remove('hidden');
             document.getElementById('adminDashboardState').classList.add('hidden');
             document.getElementById('adminPinInput').value = '';
@@ -1105,18 +1190,15 @@
             modalAdmin.classList.add('flex');
         });
 
-        // PIN validation code
         document.getElementById('btnVerifyAdminPin').addEventListener('click', () => {
             const inputVal = document.getElementById('adminPinInput').value;
 
             if (!currentTreeData) return;
 
             if (inputVal === currentTreeData.adminPin) {
-                // Login successful inside panel
                 document.getElementById('adminPinState').classList.add('hidden');
                 document.getElementById('adminDashboardState').classList.remove('hidden');
 
-                // Prepopulate current lock date time
                 const formatLocalDate = (ms) => {
                     const date = new Date(ms);
                     const pad = (n) => String(n).padStart(2, '0');
@@ -1124,12 +1206,10 @@
                 };
                 document.getElementById('adminNewDateInput').value = formatLocalDate(currentTreeData.revealDate);
 
-                // Prepopulate current active visual theme
                 const activeTheme = currentTreeData.theme || 'christmas';
                 const themeRadio = document.querySelector(`input[name="adminTreeTheme"][value="${activeTheme}"]`);
                 if (themeRadio) themeRadio.checked = true;
 
-                // Prepopulate current active visibility mode
                 const activeRevealMode = currentTreeData.revealMode || 'locked';
                 const visibilityRadio = document.querySelector(`input[name="adminTreeVisibility"][value="${activeRevealMode}"]`);
                 if (visibilityRadio) visibilityRadio.checked = true;
@@ -1139,7 +1219,6 @@
             }
         });
 
-        // Save updated reveal date and theme visual design
         document.getElementById('btnSaveAdminSettings').addEventListener('click', async () => {
             const newDateStr = document.getElementById('adminNewDateInput').value;
             const newTheme = document.querySelector('input[name="adminTreeTheme"]:checked').value;
@@ -1153,7 +1232,6 @@
             const newDateMs = new Date(newDateStr).getTime();
 
             try {
-                // Update both configuration variables in Firestore
                 const treeDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'trees', currentTreeId);
                 await updateDoc(treeDocRef, { 
                     revealDate: newDateMs,
@@ -1187,7 +1265,6 @@
 
         // ==================== UTILS AND HELPER PLUGINS ====================
 
-        // Close action handlers on modal triggers
         document.querySelectorAll('.btnCloseModal').forEach(btn => {
             btn.addEventListener('click', closeAllModals);
         });
@@ -1201,7 +1278,6 @@
             modalAdmin.classList.remove('flex');
         }
 
-        // Custom beautiful and non-blocking notification Toasts
         let toastTimeout = null;
         function showToast(message, iconName = "fa-solid fa-bell") {
             const toast = document.getElementById('toastNotification');
@@ -1224,7 +1300,6 @@
             toast.classList.remove('opacity-100', 'translate-y-0');
         };
 
-        // Falling Snow Animation logic using HTML5 Canvas
         function initSnow() {
             const canvas = document.getElementById('snowCanvas');
             const ctx = canvas.getContext('2d');
