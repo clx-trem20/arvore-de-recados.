@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +6,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght=600;800&family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
     <!-- FontAwesome for Ornament Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -858,7 +857,7 @@
             `;
         }
 
-        // --- GERADORES DE SVGs MULTI-CAMADAS DINÂMICOS COM CRESCIMENTO LATERAL PROPORCIONAL E ACABAMENTO CURVO ---
+        // --- GERADORES DE SVGs MULTI-CAMADAS DINÂMICOS COM CRESCIMENTO VERTICAL ESTÁVEL (SEM RE-ESCALONAR AS CAMADAS ANTIGAS) ---
 
         function generateChristmasSVG(tiers) {
             let paths = `
@@ -871,23 +870,18 @@
             // Adiciona presentes elegantes na base
             paths += generatePresentsMarkup();
 
-            const startY = 105;
-            const topY = 14;
-            const totalHeight = startY - topY;
-            const tierHeight = totalHeight / tiers;
-
-            const maxBaseWidth = 65 + (tiers * 4.5); 
-
-            // Luzes de pisca-pisca (pontinhos) guardados para renderizar sobre os galhos
             let lights = '';
 
+            // Desenha as camadas estavelmente de baixo (Tier 0) para cima.
+            // O fundo da árvore (Tier 0) sempre começa em y = 105 e termina em y = 90.
             for (let i = 0; i < tiers; i++) {
-                const step = i / (tiers - 1 || 1);
-                const bottomWidth = maxBaseWidth - (step * (maxBaseWidth - 28)); 
-                const topWidth = (maxBaseWidth - 12) - (step * (maxBaseWidth - 28));
-
-                const currentBottomY = startY - (i * tierHeight);
-                const currentTopY = startY - ((i + 1) * tierHeight) - 2; 
+                const bottomY = 105 - (i * 10);
+                const topY = bottomY - 15;
+                
+                // Largura do galho correspondente ao seu índice na pilha
+                const baseW = 72 - (i * 7); 
+                const bottomWidth = Math.max(20, baseW);
+                const topWidth = Math.max(12, bottomWidth - 10);
 
                 const leftBottomX = 50 - (bottomWidth / 2);
                 const rightBottomX = 50 + (bottomWidth / 2);
@@ -897,33 +891,36 @@
 
                 const greenTone = i % 2 === 0 ? '#064e3b' : '#047857';
 
-                // Desenha galhos com curvas delicadas (Bezier) em vez de triângulos planos rígidos
+                // Desenha galhos com curvas delicadas e posições estáveis
                 paths += `
-                    <!-- Camada Curva ${i + 1} -->
-                    <path d="M50 ${currentTopY} 
-                             Q${leftTopX + 2} ${currentTopY + (tierHeight/2)}, ${leftBottomX} ${currentBottomY} 
-                             Q50 ${currentBottomY + 4}, ${rightBottomX} ${currentBottomY} 
-                             Q${rightTopX - 2} ${currentTopY + (tierHeight/2)}, 50 ${currentTopY} Z" 
+                    <!-- Camada Estável ${i + 1} -->
+                    <path d="M50 ${topY} 
+                             Q${leftTopX + 2} ${topY + 7}, ${leftBottomX} ${bottomY} 
+                             Q50 ${bottomY + 4}, ${rightBottomX} ${bottomY} 
+                             Q${rightTopX - 2} ${topY + 7}, 50 ${topY} Z" 
                           fill="${greenTone}" 
                           filter="drop-shadow(0 2px 4px rgba(0,0,0,0.2))"/>
                 `;
 
-                // Adiciona pequenas luzes coloridas sobre a borda inferior curva de cada camada
+                // Pequenas luzes coloridas fixas em cada galho
                 const lightClass = i % 3 === 0 ? 'light-red' : (i % 3 === 1 ? 'light-gold' : 'light-blue');
                 const lightColor = i % 3 === 0 ? '#ef4444' : (i % 3 === 1 ? '#fbbf24' : '#3b82f6');
                 lights += `
-                    <circle cx="${leftBottomX + 4}" cy="${currentBottomY - 1}" r="1.5" fill="${lightColor}" class="${lightClass}" />
-                    <circle cx="${rightBottomX - 4}" cy="${currentBottomY - 1}" r="1.5" fill="${lightColor}" class="${lightClass}" />
-                    <circle cx="50" cy="${currentBottomY + 1}" r="1.5" fill="${lightColor}" class="${lightClass}" />
+                    <circle cx="${leftBottomX + 3}" cy="${bottomY - 1}" r="1.5" fill="${lightColor}" class="${lightClass}" />
+                    <circle cx="${rightBottomX - 3}" cy="${bottomY - 1}" r="1.5" fill="${lightColor}" class="${lightClass}" />
+                    <circle cx="50" cy="${bottomY + 1.5}" r="1.5" fill="${lightColor}" class="${lightClass}" />
                 `;
             }
 
-            // Estrela e Pisca-Pisca Geral
+            // O topo da estrela dinamicamente se ajusta à nova altura máxima da árvore
+            const highestTopY = 105 - ((tiers - 1) * 10) - 15;
+            const starCenterY = highestTopY - 4;
+
             paths += `
-                <path d="M50 20 Q55 45 40 60 T60 85" fill="none" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="1 3" class="animate-pulse" />
+                <path d="M50 ${starCenterY + 12} Q55 ${starCenterY + 30} 40 ${starCenterY + 50} T60 90" fill="none" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="1 3" class="animate-pulse" />
                 ${lights}
-                <!-- Estrela do Topo delicada -->
-                <g fill="#f59e0b" filter="drop-shadow(0 0 8px #f59e0b)">
+                <!-- Estrela do Topo Dinâmica -->
+                <g fill="#f59e0b" filter="drop-shadow(0 0 8px #f59e0b)" transform="translate(0, ${starCenterY - 10})">
                     <path d="M50 4 L52 9 L58 9 L53.5 12 L55 17.5 L50 14 L45 17.5 L46.5 12 L42 9 L48 9 Z" />
                 </g>
             `;
@@ -939,26 +936,20 @@
 
             paths += generatePresentsMarkup();
 
-            const startY = 105;
-            const topY = 16;
-            const totalHeight = startY - topY;
-            const tierHeight = totalHeight / tiers;
-
-            const maxBaseRadiusX = 32 + (tiers * 3); 
             let lights = '';
 
             for (let i = 0; i < tiers; i++) {
-                const step = i / (tiers - 1 || 1);
+                const bottomY = 105 - (i * 10);
+                const radiusY = 8;
+                const centerY = bottomY - radiusY;
                 
-                const radiusX = maxBaseRadiusX - (step * (maxBaseRadiusX - 12)); 
-                const radiusY = (tierHeight / 2) + 4;
-                const centerY = startY - (i * tierHeight) - (radiusY / 2);
+                const baseW = 34 - (i * 3);
+                const radiusX = Math.max(10, baseW);
 
                 const purpleTone = i % 2 === 0 ? '#3b0764' : '#581c87';
 
-                // Camadas em nuvem mística delicada
                 paths += `
-                    <!-- Camada Mística ${i+1} -->
+                    <!-- Camada Mística Estável ${i+1} -->
                     <path d="M${50 - radiusX} ${centerY} 
                              Q50 ${centerY - radiusY}, ${50 + radiusX} ${centerY} 
                              Q50 ${centerY + radiusY}, ${50 - radiusX} ${centerY} Z" 
@@ -966,7 +957,6 @@
                           filter="drop-shadow(0 2px 5px rgba(0,0,0,0.25))"/>
                 `;
 
-                // Pisca-pisca místico
                 const lightClass = i % 2 === 0 ? 'light-blue' : 'light-gold';
                 const lightColor = i % 2 === 0 ? '#38bdf8' : '#eab308';
                 lights += `
@@ -975,10 +965,13 @@
                 `;
             }
 
+            const highestTopY = 105 - ((tiers - 1) * 10) - 16;
+            const starCenterY = highestTopY - 4;
+
             paths += `
-                <path d="M50 15 Q30 45 70 70 T35 100" fill="none" stroke="#38bdf8" stroke-width="0.5" stroke-dasharray="2 3" class="animate-pulse" />
+                <path d="M50 ${starCenterY + 12} Q30 ${starCenterY + 30} 70 ${starCenterY + 55} T35 95" fill="none" stroke="#38bdf8" stroke-width="0.5" stroke-dasharray="2 3" class="animate-pulse" />
                 ${lights}
-                <g fill="#c084fc" filter="drop-shadow(0 0 12px #c084fc)">
+                <g fill="#c084fc" filter="drop-shadow(0 0 12px #c084fc)" transform="translate(0, ${starCenterY - 8})">
                     <circle cx="50" cy="8" r="4"/>
                     <path d="M50 2 L50 14 M44 8 L56 8" stroke="#c084fc" stroke-width="0.8"/>
                 </g>
@@ -995,48 +988,44 @@
 
             paths += generatePresentsMarkup();
 
-            const startY = 105;
-            const topY = 15;
-            const totalHeight = startY - topY;
-            const tierHeight = totalHeight / tiers;
-
-            const maxBaseWidth = 56 + (tiers * 4); 
             let lights = '';
 
             for (let i = 0; i < tiers; i++) {
-                const step = i / (tiers - 1 || 1);
+                const bottomY = 105 - (i * 10);
+                const topY = bottomY - 15;
                 
-                const width = maxBaseWidth - (step * (maxBaseWidth - 22));
-                const currentBottomY = startY - (i * tierHeight);
-                const currentTopY = startY - ((i + 1) * tierHeight) - 2;
+                const baseW = 68 - (i * 6);
+                const width = Math.max(18, baseW);
 
                 const leftX = 50 - (width / 2);
                 const rightX = 50 + (width / 2);
 
                 const amberTone = i % 2 === 0 ? '#b45309' : '#d97706';
 
-                // Formas estelares elegantes
                 paths += `
-                    <!-- Camada Dourada ${i+1} -->
-                    <path d="M50 ${currentTopY} 
-                             Q${leftX + 4} ${currentTopY + 4}, ${leftX} ${currentBottomY} 
-                             Q50 ${currentBottomY + 2}, ${rightX} ${currentBottomY} 
-                             Q${rightX - 4} ${currentTopY + 4}, 50 ${currentTopY} Z" 
-                          fill="${amberTone}" 
-                          filter="drop-shadow(0 2px 6px rgba(180,83,9,0.25))"/>
+                    <!-- Camada Dourada Estável ${i+1} -->
+                    <path d="M50 ${topY} 
+                             Q${leftX + 4} ${topY + 4}, ${leftX} ${bottomY} 
+                             Q50 ${bottomY + 2}, ${rightX} ${bottomY} 
+                             Q${rightX - 4} ${topY + 4}, 50 ${topY} Z" 
+                      fill="${amberTone}" 
+                      filter="drop-shadow(0 2px 6px rgba(180,83,9,0.25))"/>
                 `;
 
                 const lightClass = i % 2 === 0 ? 'light-gold' : 'light-blue';
                 lights += `
-                    <circle cx="${leftX + 2}" cy="${currentBottomY}" r="1.3" fill="#fffbeb" class="${lightClass}" />
-                    <circle cx="${rightX - 2}" cy="${currentBottomY}" r="1.3" fill="#fffbeb" class="${lightClass}" />
+                    <circle cx="${leftX + 2}" cy="${bottomY}" r="1.3" fill="#fffbeb" class="${lightClass}" />
+                    <circle cx="${rightX - 2}" cy="${bottomY}" r="1.3" fill="#fffbeb" class="${lightClass}" />
                 `;
             }
 
+            const highestTopY = 105 - ((tiers - 1) * 10) - 15;
+            const starCenterY = highestTopY - 4;
+
             paths += `
-                <path d="M50 20 L28 100 M50 20 L72 100" fill="none" stroke="#ffffff" stroke-width="0.4" stroke-dasharray="2 4" opacity="0.4"/>
+                <path d="M50 ${starCenterY + 12} L28 100 M50 ${starCenterY + 12} L72 100" fill="none" stroke="#ffffff" stroke-width="0.4" stroke-dasharray="2 4" opacity="0.4"/>
                 ${lights}
-                <g fill="#fffbeb" filter="drop-shadow(0 0 15px #fef08a)">
+                <g fill="#fffbeb" filter="drop-shadow(0 0 15px #fef08a)" transform="translate(0, ${starCenterY - 11})">
                     <polygon points="50,1 53,8 61,8 54,13 57,21 50,16 43,21 46,13 39,8 47,8" />
                 </g>
             `;
@@ -1182,23 +1171,40 @@
             showToast("Agora, toque/clique no local desejado na árvore!", "fa-solid fa-arrow-pointer");
         });
 
-        // Função auxiliar ajustada para validar se as coordenadas do clique estão dentro do limite da árvore
-        // que agora cresce em altura (tiers) e em largura (lateralmente)
+        // Função de validação precisa e estável de acordo com as camadas empilhadas bottom-up
         function isValidTreePosition(x, y, theme, tiers) {
-            // Copa da árvore começa em y=8 (abaixo da estrela) e vai até y=105 (início do vaso)
-            if (y < 8 || y > 105) return false;
+            // Copa da árvore começa abaixo do topo dinâmico e vai até a base fixa (y=105)
+            if (y < 5 || y > 105) return false;
 
-            // Define a largura máxima adaptável de acordo com as camadas de crescimento (tiers)
-            let maxHalfWidth = (65 + (tiers * 4.5)) / 2; // Christmas base
-            if (theme === 'enchanted') maxHalfWidth = (32 + (tiers * 3));
-            if (theme === 'golden') maxHalfWidth = (56 + (tiers * 4)) / 2;
+            // Percorre todas as camadas ativas da base para cima buscando se o toque atingiu alguma delas
+            for (let i = 0; i < tiers; i++) {
+                const bottomY = 105 - (i * 10);
+                const topY = bottomY - 15;
 
-            // Interpolação linear da copa triangular (topo y=8, base y=105)
-            const t = (y - 8) / (105 - 8);
-            const currentHalfWidth = 5 + (maxHalfWidth - 5) * t;
+                // Verifica se o toque está na faixa de altura desta camada
+                if (y >= topY && y <= bottomY) {
+                    // Largura base da camada estável
+                    let baseW = 72 - (i * 7);
+                    if (theme === 'enchanted') baseW = 68 - (i * 6);
+                    if (theme === 'golden') baseW = 68 - (i * 6);
 
-            // O centro é x = 50%
-            return (x >= 50 - currentHalfWidth && x <= 50 + currentHalfWidth);
+                    // Interpolação linear da largura triangular de acordo com a altura interna da camada
+                    const t = (y - topY) / 15; // 0 no topo da camada, 1 na base
+                    const currentW = (baseW - 10) + (t * 10);
+
+                    // Verifica se o X está dentro da borda horizontal desta camada
+                    if (x >= 50 - currentW / 2 && x <= 50 + currentW / 2) {
+                        return true;
+                    }
+                }
+            }
+
+            // Permite colocar enfeites bem próximo do tronco se o Y estiver na base
+            if (y >= 95 && y <= 105 && x >= 40 && x <= 60) {
+                return true;
+            }
+
+            return false;
         }
 
         // Click handler on actual Tree physical canvas bounds
@@ -1212,7 +1218,7 @@
             const theme = currentTreeData ? currentTreeData.theme : 'christmas';
             const tiers = currentActiveTiers; // Lê as camadas atuais calculadas em tempo real
 
-            // Validação de segurança adaptada para crescimento dinâmico vertical/lateral
+            // Validação de segurança adaptada para crescimento dinâmico vertical/lateral estável
             if (!isValidTreePosition(xVal, yVal, theme, tiers)) {
                 showToast("Por favor, clique nos galhos da árvore para pendurar seu enfeite!", "fa-solid fa-tree");
                 return; // Mantém o estado ativo
