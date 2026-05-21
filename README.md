@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -76,6 +77,23 @@
         #treeContainer {
             transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), max-width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
+        /* Pisca-pisca custom glow animations */
+        @keyframes twinkle-1 {
+            0%, 100% { opacity: 0.3; filter: drop-shadow(0 0 2px #ef4444); }
+            50% { opacity: 1; filter: drop-shadow(0 0 8px #ef4444); }
+        }
+        @keyframes twinkle-2 {
+            0%, 100% { opacity: 1; filter: drop-shadow(0 0 8px #eab308); }
+            50% { opacity: 0.3; filter: drop-shadow(0 0 2px #eab308); }
+        }
+        @keyframes twinkle-3 {
+            0%, 100% { opacity: 0.4; filter: drop-shadow(0 0 2px #3b82f6); }
+            50% { opacity: 1; filter: drop-shadow(0 0 8px #3b82f6); }
+        }
+        .light-red { animation: twinkle-1 1.5s infinite ease-in-out; }
+        .light-gold { animation: twinkle-2 1.8s infinite ease-in-out; }
+        .light-blue { animation: twinkle-3 1.3s infinite ease-in-out; }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen pb-12">
@@ -814,7 +832,33 @@
             svgWrapper.innerHTML = svgContent;
         }
 
-        // --- GERADORES DE SVGs MULTI-CAMADAS DINÂMICOS COM CRESCIMENTO LATERAL PROPORCIONAL ---
+        // --- AUXILIARES DE ELEMENTOS DE BASE (PRESENTES E ILUMINAÇÃO) ---
+
+        function generatePresentsMarkup() {
+            return `
+                <!-- Presentes na base -->
+                <!-- Presente 1 (Vermelho com laço dourado) -->
+                <rect x="30" y="108" width="11" height="11" fill="#dc2626" rx="1.5" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.3))"/>
+                <line x1="35.5" y1="108" x2="35.5" y2="119" stroke="#fbbf24" stroke-width="1.8"/>
+                <line x1="30" y1="113.5" x2="41" y2="113.5" stroke="#fbbf24" stroke-width="1.8"/>
+                <!-- Laço do Presente 1 -->
+                <path d="M35.5 108 C34 105, 31 106, 35.5 108 C40 106, 37 105, 35.5 108 Z" fill="#fbbf24"/>
+
+                <!-- Presente 2 (Azul com laço branco) -->
+                <rect x="58" y="110" width="10" height="10" fill="#2563eb" rx="1.5" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.3))"/>
+                <line x1="63" y1="110" x2="63" y2="120" stroke="#ffffff" stroke-width="1.5"/>
+                <line x1="58" y1="115" x2="68" y2="115" stroke="#ffffff" stroke-width="1.5"/>
+                <!-- Laço do Presente 2 -->
+                <path d="M63 110 C61.5 107, 59 108, 63 110 C67 108, 64.5 107, 63 110 Z" fill="#ffffff"/>
+
+                <!-- Presente 3 (Dourado com fita vermelha) -->
+                <rect x="42" y="112" width="8" height="8" fill="#d97706" rx="1" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.3))"/>
+                <line x1="46" y1="112" x2="46" y2="120" stroke="#dc2626" stroke-width="1.2"/>
+                <line x1="42" y1="116" x2="50" y2="116" stroke="#dc2626" stroke-width="1.2"/>
+            `;
+        }
+
+        // --- GERADORES DE SVGs MULTI-CAMADAS DINÂMICOS COM CRESCIMENTO LATERAL PROPORCIONAL E ACABAMENTO CURVO ---
 
         function generateChristmasSVG(tiers) {
             let paths = `
@@ -824,40 +868,63 @@
                 <path d="M41 120 h18 l-3 -8 h-12 z" fill="#780000" />
             `;
 
+            // Adiciona presentes elegantes na base
+            paths += generatePresentsMarkup();
+
             const startY = 105;
-            const topY = 12;
+            const topY = 14;
             const totalHeight = startY - topY;
             const tierHeight = totalHeight / tiers;
 
-            // Largura máxima da base da copa aumenta à medida que a árvore ganha mais tiers
-            const maxBaseWidth = 65 + (tiers * 4.5); // Cresce lateralmente 
+            const maxBaseWidth = 65 + (tiers * 4.5); 
+
+            // Luzes de pisca-pisca (pontinhos) guardados para renderizar sobre os galhos
+            let lights = '';
 
             for (let i = 0; i < tiers; i++) {
                 const step = i / (tiers - 1 || 1);
-                
-                // Distribuição equilibrada de largura de baixo para cima
-                const bottomWidth = maxBaseWidth - (step * (maxBaseWidth - 30)); 
-                const topWidth = (maxBaseWidth - 15) - (step * (maxBaseWidth - 30));
+                const bottomWidth = maxBaseWidth - (step * (maxBaseWidth - 28)); 
+                const topWidth = (maxBaseWidth - 12) - (step * (maxBaseWidth - 28));
 
                 const currentBottomY = startY - (i * tierHeight);
-                const currentTopY = startY - ((i + 1) * tierHeight) - 4; 
+                const currentTopY = startY - ((i + 1) * tierHeight) - 2; 
 
                 const leftBottomX = 50 - (bottomWidth / 2);
                 const rightBottomX = 50 + (bottomWidth / 2);
 
+                const leftTopX = 50 - (topWidth / 2);
+                const rightTopX = 50 + (topWidth / 2);
+
                 const greenTone = i % 2 === 0 ? '#064e3b' : '#047857';
 
+                // Desenha galhos com curvas delicadas (Bezier) em vez de triângulos planos rígidos
                 paths += `
-                    <!-- Camada ${i + 1} -->
-                    <path d="M50 ${currentTopY} L${leftBottomX} ${currentBottomY} L${rightBottomX} ${currentBottomY} Z" fill="${greenTone}" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.15))"/>
+                    <!-- Camada Curva ${i + 1} -->
+                    <path d="M50 ${currentTopY} 
+                             Q${leftTopX + 2} ${currentTopY + (tierHeight/2)}, ${leftBottomX} ${currentBottomY} 
+                             Q50 ${currentBottomY + 4}, ${rightBottomX} ${currentBottomY} 
+                             Q${rightTopX - 2} ${currentTopY + (tierHeight/2)}, 50 ${currentTopY} Z" 
+                          fill="${greenTone}" 
+                          filter="drop-shadow(0 2px 4px rgba(0,0,0,0.2))"/>
+                `;
+
+                // Adiciona pequenas luzes coloridas sobre a borda inferior curva de cada camada
+                const lightClass = i % 3 === 0 ? 'light-red' : (i % 3 === 1 ? 'light-gold' : 'light-blue');
+                const lightColor = i % 3 === 0 ? '#ef4444' : (i % 3 === 1 ? '#fbbf24' : '#3b82f6');
+                lights += `
+                    <circle cx="${leftBottomX + 4}" cy="${currentBottomY - 1}" r="1.5" fill="${lightColor}" class="${lightClass}" />
+                    <circle cx="${rightBottomX - 4}" cy="${currentBottomY - 1}" r="1.5" fill="${lightColor}" class="${lightClass}" />
+                    <circle cx="50" cy="${currentBottomY + 1}" r="1.5" fill="${lightColor}" class="${lightClass}" />
                 `;
             }
 
+            // Estrela e Pisca-Pisca Geral
             paths += `
-                <path d="M50 20 Q55 45 40 60 T60 85 T35 105" fill="none" stroke="#fbbf24" stroke-width="0.6" stroke-dasharray="1.5 3" class="animate-pulse" />
-                <!-- Estrela do Topo -->
+                <path d="M50 20 Q55 45 40 60 T60 85" fill="none" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="1 3" class="animate-pulse" />
+                ${lights}
+                <!-- Estrela do Topo delicada -->
                 <g fill="#f59e0b" filter="drop-shadow(0 0 8px #f59e0b)">
-                    <path d="M50 4 L52.5 10 L59 10 L54 13.5 L56 19.5 L50 15.5 L44 19.5 L46 13.5 L41 10 L47.5 10 Z" />
+                    <path d="M50 4 L52 9 L58 9 L53.5 12 L55 17.5 L50 14 L45 17.5 L46.5 12 L42 9 L48 9 Z" />
                 </g>
             `;
 
@@ -870,33 +937,50 @@
                 <path d="M44 105 Q47 115 41 121 h18 Q53 115 56 105 z" fill="#2d1b4e"/>
             `;
 
+            paths += generatePresentsMarkup();
+
             const startY = 105;
-            const topY = 15;
+            const topY = 16;
             const totalHeight = startY - topY;
             const tierHeight = totalHeight / tiers;
 
-            const maxBaseRadiusX = 32 + (tiers * 3); // Escalonamento horizontal do tema místico
+            const maxBaseRadiusX = 32 + (tiers * 3); 
+            let lights = '';
 
             for (let i = 0; i < tiers; i++) {
                 const step = i / (tiers - 1 || 1);
                 
-                const radiusX = maxBaseRadiusX - (step * (maxBaseRadiusX - 14)); 
-                const radiusY = (tierHeight / 2) + 6;
+                const radiusX = maxBaseRadiusX - (step * (maxBaseRadiusX - 12)); 
+                const radiusY = (tierHeight / 2) + 4;
                 const centerY = startY - (i * tierHeight) - (radiusY / 2);
 
                 const purpleTone = i % 2 === 0 ? '#3b0764' : '#581c87';
 
+                // Camadas em nuvem mística delicada
                 paths += `
                     <!-- Camada Mística ${i+1} -->
-                    <ellipse cx="50" cy="${centerY}" rx="${radiusX}" ry="${radiusY}" fill="${purpleTone}" filter="drop-shadow(0 2px 5px rgba(0,0,0,0.25))"/>
+                    <path d="M${50 - radiusX} ${centerY} 
+                             Q50 ${centerY - radiusY}, ${50 + radiusX} ${centerY} 
+                             Q50 ${centerY + radiusY}, ${50 - radiusX} ${centerY} Z" 
+                          fill="${purpleTone}" 
+                          filter="drop-shadow(0 2px 5px rgba(0,0,0,0.25))"/>
+                `;
+
+                // Pisca-pisca místico
+                const lightClass = i % 2 === 0 ? 'light-blue' : 'light-gold';
+                const lightColor = i % 2 === 0 ? '#38bdf8' : '#eab308';
+                lights += `
+                    <circle cx="${50 - radiusX + 3}" cy="${centerY}" r="1.3" fill="${lightColor}" class="${lightClass}" />
+                    <circle cx="${50 + radiusX - 3}" cy="${centerY}" r="1.3" fill="${lightColor}" class="${lightClass}" />
                 `;
             }
 
             paths += `
-                <path d="M50 15 Q30 45 70 70 T35 100" fill="none" stroke="#38bdf8" stroke-width="0.75" stroke-dasharray="2 4" class="animate-pulse" />
+                <path d="M50 15 Q30 45 70 70 T35 100" fill="none" stroke="#38bdf8" stroke-width="0.5" stroke-dasharray="2 3" class="animate-pulse" />
+                ${lights}
                 <g fill="#c084fc" filter="drop-shadow(0 0 12px #c084fc)">
-                    <circle cx="50" cy="8" r="4.5"/>
-                    <path d="M50 1 L50 15 M42 8 L58 8" stroke="#c084fc" stroke-width="1"/>
+                    <circle cx="50" cy="8" r="4"/>
+                    <path d="M50 2 L50 14 M44 8 L56 8" stroke="#c084fc" stroke-width="0.8"/>
                 </g>
             `;
 
@@ -909,17 +993,20 @@
                 <rect x="47" y="103" width="6" height="18" fill="#78350f" rx="1"/>
             `;
 
+            paths += generatePresentsMarkup();
+
             const startY = 105;
             const topY = 15;
             const totalHeight = startY - topY;
             const tierHeight = totalHeight / tiers;
 
-            const maxBaseWidth = 56 + (tiers * 4); // Expansão lateral gradual
+            const maxBaseWidth = 56 + (tiers * 4); 
+            let lights = '';
 
             for (let i = 0; i < tiers; i++) {
                 const step = i / (tiers - 1 || 1);
                 
-                const width = maxBaseWidth - (step * (maxBaseWidth - 25));
+                const width = maxBaseWidth - (step * (maxBaseWidth - 22));
                 const currentBottomY = startY - (i * tierHeight);
                 const currentTopY = startY - ((i + 1) * tierHeight) - 2;
 
@@ -928,16 +1015,29 @@
 
                 const amberTone = i % 2 === 0 ? '#b45309' : '#d97706';
 
+                // Formas estelares elegantes
                 paths += `
                     <!-- Camada Dourada ${i+1} -->
-                    <polygon points="50,${currentTopY} ${leftX},${currentBottomY} ${rightX},${currentBottomY}" fill="${amberTone}" filter="drop-shadow(0 2px 6px rgba(180,83,9,0.3))"/>
+                    <path d="M50 ${currentTopY} 
+                             Q${leftX + 4} ${currentTopY + 4}, ${leftX} ${currentBottomY} 
+                             Q50 ${currentBottomY + 2}, ${rightX} ${currentBottomY} 
+                             Q${rightX - 4} ${currentTopY + 4}, 50 ${currentTopY} Z" 
+                          fill="${amberTone}" 
+                          filter="drop-shadow(0 2px 6px rgba(180,83,9,0.25))"/>
+                `;
+
+                const lightClass = i % 2 === 0 ? 'light-gold' : 'light-blue';
+                lights += `
+                    <circle cx="${leftX + 2}" cy="${currentBottomY}" r="1.3" fill="#fffbeb" class="${lightClass}" />
+                    <circle cx="${rightX - 2}" cy="${currentBottomY}" r="1.3" fill="#fffbeb" class="${lightClass}" />
                 `;
             }
 
             paths += `
-                <path d="M50 20 L28 100 M50 20 L72 100" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-dasharray="2 3" opacity="0.6"/>
+                <path d="M50 20 L28 100 M50 20 L72 100" fill="none" stroke="#ffffff" stroke-width="0.4" stroke-dasharray="2 4" opacity="0.4"/>
+                ${lights}
                 <g fill="#fffbeb" filter="drop-shadow(0 0 15px #fef08a)">
-                    <polygon points="50,1 53,9 61,9 54,14 57,22 50,17 43,22 46,14 39,9 47,9" />
+                    <polygon points="50,1 53,8 61,8 54,13 57,21 50,16 43,21 46,13 39,8 47,8" />
                 </g>
             `;
 
