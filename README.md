@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -6,8 +7,8 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght=600;800&family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Ornament Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome para Ícones de Enfeites -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -23,7 +24,7 @@
             font-family: 'Playfair Display', serif;
             font-style: italic;
         }
-        /* Custom Glowing effects */
+        /* Efeitos luminosos personalizados */
         .glow-gold {
             text-shadow: 0 0 10px rgba(234, 179, 8, 0.6), 0 0 20px rgba(234, 179, 8, 0.4);
         }
@@ -33,7 +34,7 @@
         .glow-box-green {
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
         }
-        /* Snowy background canvas */
+        /* Tela de fundo interativa para a neve */
         #snowCanvas {
             position: fixed;
             top: 0;
@@ -47,7 +48,7 @@
             position: relative;
             z-index: 2;
         }
-        /* Custom scrollbar */
+        /* Customizando a barra de rolagem estética */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -58,7 +59,6 @@
             background: #eab308;
             border-radius: 3px;
         }
-        /* Ornament pulse animation */
         @keyframes pulse-slow {
             0%, 100% { transform: scale(1) translate(-50%, -50%); filter: drop-shadow(0 0 2px rgba(255,255,255,0.4)); }
             50% { transform: scale(1.1) translate(-45%, -45%); filter: drop-shadow(0 0 8px rgba(255,255,255,0.8)); }
@@ -72,12 +72,12 @@
             z-index: 50 !important;
             filter: drop-shadow(0 0 12px rgba(255,255,255,1)) !important;
         }
-        /* Smooth transition for dynamic height and width resizing */
+        /* Transição suave de redimensionamento da árvore para altura e largura */
         #treeContainer {
             transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), max-width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* Pisca-pisca custom glow animations */
+        /* Animações dos pisca-piscas */
         @keyframes twinkle-1 {
             0%, 100% { opacity: 0.3; filter: drop-shadow(0 0 2px #ef4444); }
             50% { opacity: 1; filter: drop-shadow(0 0 8px #ef4444); }
@@ -102,7 +102,6 @@
 
     <div class="content-container max-w-4xl mx-auto px-4 pt-6">
         
-        <!-- HEADER GLOBAL -->
         <header class="text-center mb-8 flex flex-col items-center">
             <div class="flex items-center gap-2 mb-2 bg-slate-900/60 backdrop-blur-md px-4 py-1.5 rounded-full border border-yellow-500/20 shadow-lg">
                 <span class="text-yellow-400 animate-pulse text-sm"><i class="fa-solid fa-tree"></i></span>
@@ -121,7 +120,6 @@
             <p class="text-slate-500 text-sm mt-2">Por favor, aguarde um instante.</p>
         </div>
 
-        <!-- 1. TELA DE CRIAÇÃO (Exibida apenas quando NÃO houver link/parâmetro de árvore ativo) -->
         <div id="homeScreen" class="hidden space-y-8">
             <div class="bg-gradient-to-b from-slate-900/90 to-slate-950/90 backdrop-blur-lg border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl">
                 <h2 class="serif-title text-2xl font-bold text-yellow-400 mb-4 flex items-center gap-2">
@@ -132,18 +130,15 @@
                 </p>
 
                 <form id="createTreeForm" class="space-y-5">
-                    <!-- Nome da Árvore -->
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Seu Nome ou Nome do Grupo</label>
                         <input type="text" id="treeOwnerName" required placeholder="Ex: Lucas, Família Silva, Terceirão" 
                                class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition-all">
                     </div>
 
-                    <!-- Escolha do Tema -->
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tema Visual da Árvore</label>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <!-- Tema 1 -->
                             <label class="cursor-pointer group relative block">
                                 <input type="radio" name="treeTheme" value="christmas" checked class="peer hidden">
                                 <div class="bg-slate-900/60 border-2 border-slate-800 rounded-2xl p-4 transition-all group-hover:border-emerald-600 peer-checked:border-emerald-500 peer-checked:bg-emerald-950/20">
@@ -152,7 +147,6 @@
                                     <p class="text-xs text-slate-500 mt-1">Elegante pinheiro com luzes aconchegantes e tom verde tradicional.</p>
                                 </div>
                             </label>
-                            <!-- Tema 2 -->
                             <label class="cursor-pointer group relative block">
                                 <input type="radio" name="treeTheme" value="enchanted" class="peer hidden">
                                 <div class="bg-slate-900/60 border-2 border-slate-800 rounded-2xl p-4 transition-all group-hover:border-purple-600 peer-checked:border-purple-500 peer-checked:bg-purple-950/20">
@@ -161,7 +155,6 @@
                                     <p class="text-xs text-slate-500 mt-1">Um visual místico de árvores fantásticas com néons roxos e azuis.</p>
                                 </div>
                             </label>
-                            <!-- Tema 3 -->
                             <label class="cursor-pointer group relative block">
                                 <input type="radio" name="treeTheme" value="golden" class="peer hidden">
                                 <div class="bg-slate-900/60 border-2 border-slate-800 rounded-2xl p-4 transition-all group-hover:border-yellow-600 peer-checked:border-yellow-500 peer-checked:bg-yellow-950/20">
@@ -173,7 +166,6 @@
                         </div>
                     </div>
 
-                    <!-- Data de Revelação -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Data e Hora de Abertura</label>
@@ -189,11 +181,9 @@
                         </div>
                     </div>
 
-                    <!-- Visibilidade Inicial dos Recados -->
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Visibilidade dos Recados</label>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Opção Oculta -->
                             <label class="cursor-pointer group block">
                                 <input type="radio" name="treeVisibility" value="locked" checked class="peer hidden">
                                 <div class="bg-slate-900/60 border-2 border-slate-800 rounded-2xl p-4 transition-all group-hover:border-yellow-600 peer-checked:border-yellow-500 peer-checked:bg-yellow-950/20">
@@ -201,7 +191,6 @@
                                     <p class="text-xs text-slate-500 mt-1">Os segredos e carinhos ficam ocultos até o cronômetro zerar na data selecionada.</p>
                                 </div>
                             </label>
-                            <!-- Opção Visível -->
                             <label class="cursor-pointer group block">
                                 <input type="radio" name="treeVisibility" value="unlocked" class="peer hidden">
                                 <div class="bg-slate-900/60 border-2 border-slate-800 rounded-2xl p-4 transition-all group-hover:border-yellow-600 peer-checked:border-yellow-500 peer-checked:bg-yellow-950/20">
@@ -218,7 +207,6 @@
                 </form>
             </div>
 
-            <!-- Como Funciona Section -->
             <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 text-center">
                 <h3 class="font-bold text-slate-200 mb-4">Como funciona a jornada?</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -241,10 +229,8 @@
             </div>
         </div>
 
-        <!-- 2. TELA DA ÁRVORE PRINCIPAL (Exibida apenas se houver o ID correto na URL) -->
         <div id="treeScreen" class="hidden space-y-6">
             
-            <!-- Painel de Informações da Árvore e Temporizador -->
             <div id="treeCardHeader" class="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
                 <div class="text-center md:text-left space-y-1 flex-1">
                     <span class="text-xs bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1 rounded-full inline-block font-semibold">
@@ -262,12 +248,10 @@
                     </div>
                 </div>
 
-                <!-- Painel do Cronômetro -->
                 <div class="bg-slate-950/80 border border-yellow-500/20 px-6 py-4 rounded-2xl text-center glow-box-gold w-full md:w-auto">
                     <p id="countdownLabel" class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest mb-1.5">
                         Revelando em:
                     </p>
-                    <!-- Ticking countdown elements -->
                     <div id="countdownTimer" class="flex items-center justify-center gap-2 font-mono text-lg md:text-xl font-bold">
                         <div>
                             <span id="daysVal" class="bg-slate-900 border border-slate-800 px-2 py-1 rounded text-yellow-300">00</span>
@@ -289,37 +273,25 @@
                             <span class="text-[10px] text-slate-500 block font-sans mt-1">seg</span>
                         </div>
                     </div>
-                    <!-- Banner Aberto -->
                     <div id="revealedStatusBanner" class="hidden text-emerald-400 font-bold flex items-center justify-center gap-1.5 text-sm animate-bounce">
                         <i class="fa-solid fa-lock-open"></i> MENSAGENS REVELADAS!
                     </div>
                 </div>
             </div>
 
-            <!-- ÁREA DO RENDERIZADOR DA ÁRVORE INTERATIVA -->
             <div class="relative bg-slate-950/70 border border-slate-800 rounded-3xl p-4 md:p-8 shadow-2xl overflow-hidden flex flex-col items-center">
                 
-                <!-- Background ambient lights -->
                 <div id="themeLightGlow" class="absolute w-72 h-72 rounded-full bg-emerald-500/10 blur-[80px] -z-10 top-1/4"></div>
 
-                <!-- Feedback Visual de "Clique para posicionar" -->
                 <div id="clickPlacementInstructions" class="bg-yellow-500/15 border border-yellow-500/30 rounded-xl px-4 py-2.5 text-center text-xs text-yellow-200 max-w-md mb-6 animate-pulse hidden">
                     🎯 <strong>Modo Posicionamento Ativo:</strong> Clique em qualquer galho da árvore abaixo para escolher onde pendurar seu enfeite!
                 </div>
 
-                <!-- O Conteiner da Árvore Física (Com transição de altura e largura máxima equilibrada) -->
                 <div id="treeContainer" class="relative w-full max-w-[420px] cursor-pointer bg-slate-900/20 rounded-2xl select-none" style="height: 460px;">
-                    
-                    <!-- Div do SVG Dinâmico da Árvore -->
-                    <div id="treeSvgWrapper" class="w-full h-full p-4">
-                        <!-- O SVG será injetado e redesenhado dinamicamente via JS baseado no número de enfeites -->
-                    </div>
-
-                    <!-- Div de Ornatos Colocados via JS -->
+                    <div id="treeSvgWrapper" class="w-full h-full p-4"></div>
                     <div id="ornamentsWrapper" class="absolute inset-0"></div>
                 </div>
 
-                <!-- Botões de Controle e Ações sob a Árvore -->
                 <div class="mt-8 flex flex-wrap gap-4 items-center justify-center w-full max-w-lg">
                     <button id="btnPrepareOrnament" class="flex-1 min-w-[150px] bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-slate-950 font-bold py-3.5 px-4 rounded-xl shadow-lg hover:shadow-green-500/20 transition-all flex items-center justify-center gap-2">
                         <i class="fa-solid fa-gift"></i> Pendurar Enfeite
@@ -332,7 +304,6 @@
                     </button>
                 </div>
 
-                <!-- Link de Voltar ou Criar Nova -->
                 <div class="mt-4 text-center">
                     <a href="?" class="text-xs text-slate-500 hover:text-yellow-500 transition-all underline">Gostou da ideia? Clique aqui para criar a sua própria árvore!</a>
                 </div>
@@ -340,8 +311,6 @@
         </div>
 
     </div>
-
-    <!-- ==================== MODALS ==================== -->
 
     <!-- MODAL 1: CRIAR ENFEITE (PENDURAR) -->
     <div id="modalOrnament" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md items-center justify-center p-4 z-50 hidden">
@@ -355,13 +324,10 @@
                 <p class="text-xs text-slate-400 mt-1">Sua mensagem ficará selada até a data limite programada.</p>
             </div>
 
-            <!-- Formulário -->
             <form id="ornamentForm" class="space-y-4">
-                <!-- Seletor de Enfeite Visual -->
                 <div>
                     <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">1. Escolha seu Enfeite</label>
                     <div class="grid grid-cols-5 gap-2">
-                        <!-- Bola -->
                         <label class="cursor-pointer text-center group">
                             <input type="radio" name="ornamentDesign" value="ball" checked class="peer hidden">
                             <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 transition-all group-hover:border-red-500 peer-checked:border-red-500 peer-checked:bg-red-500/10 text-red-500">
@@ -369,7 +335,6 @@
                             </div>
                             <span class="text-[9px] text-slate-500 mt-1 block">Bola</span>
                         </label>
-                        <!-- Estrela -->
                         <label class="cursor-pointer text-center group">
                             <input type="radio" name="ornamentDesign" value="star" class="peer hidden">
                             <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 transition-all group-hover:border-yellow-500 peer-checked:border-yellow-500 peer-checked:bg-yellow-500/10 text-yellow-500">
@@ -377,7 +342,6 @@
                             </div>
                             <span class="text-[9px] text-slate-500 mt-1 block">Estrela</span>
                         </label>
-                        <!-- Sino -->
                         <label class="cursor-pointer text-center group">
                             <input type="radio" name="ornamentDesign" value="bell" class="peer hidden">
                             <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 transition-all group-hover:border-amber-500 peer-checked:border-amber-500 peer-checked:bg-amber-500/10 text-amber-400">
@@ -385,7 +349,6 @@
                             </div>
                             <span class="text-[9px] text-slate-500 mt-1 block">Sino</span>
                         </label>
-                        <!-- Presente -->
                         <label class="cursor-pointer text-center group">
                             <input type="radio" name="ornamentDesign" value="gift" class="peer hidden">
                             <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 transition-all group-hover:border-blue-500 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 text-blue-400">
@@ -393,7 +356,6 @@
                             </div>
                             <span class="text-[9px] text-slate-500 mt-1 block">Presente</span>
                         </label>
-                        <!-- Meia -->
                         <label class="cursor-pointer text-center group">
                             <input type="radio" name="ornamentDesign" value="sock" class="peer hidden">
                             <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 transition-all group-hover:border-emerald-500 peer-checked:border-emerald-500 peer-checked:bg-emerald-500/10 text-emerald-400">
@@ -404,14 +366,12 @@
                     </div>
                 </div>
 
-                <!-- Quem Envia -->
                 <div>
                     <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">2. Seu Nome (Ou apelido)</label>
                     <input type="text" id="ornamentSender" required placeholder="Ex: Maria Clara, Seu Admirador, Anônimo" 
                            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-yellow-500 transition-all text-sm">
                 </div>
 
-                <!-- Recado Secreto -->
                 <div>
                     <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">3. Mensagem Secreta</label>
                     <textarea id="ornamentMessage" required rows="4" maxlength="300" placeholder="Escreva aqui seu recado, votos de felicidade ou carinho..." 
@@ -437,12 +397,10 @@
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
-            <!-- Ícone do Enfeite -->
             <div id="readOrnamentIconWrapper" class="w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-2">
                 <i class="fa-solid fa-circle"></i>
             </div>
 
-            <!-- Status do Bloqueio -->
             <div id="readLockedContent" class="space-y-4">
                 <div class="inline-flex items-center gap-1.5 bg-red-500/10 border border-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-semibold">
                     <i class="fa-solid fa-lock"></i> MENSAGEM TRANCADA
@@ -457,7 +415,6 @@
                 </div>
             </div>
 
-            <!-- Status Aberto (Conteúdo Revelado) -->
             <div id="readUnlockedContent" class="space-y-4 hidden">
                 <div class="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-xs font-semibold animate-pulse">
                     <i class="fa-solid fa-lock-open"></i> ENFEITE REVELADO
@@ -496,7 +453,6 @@
                 <p class="text-xs text-slate-400 mt-1">Gerencie as regras e o visual de sua árvore.</p>
             </div>
 
-            <!-- PIN Login State -->
             <div id="adminPinState" class="space-y-4">
                 <p class="text-xs text-slate-300 text-center">Digite o PIN de 6 dígitos que você cadastrou ao criar esta árvore:</p>
                 <div class="space-y-3">
@@ -508,14 +464,12 @@
                 </div>
             </div>
 
-            <!-- Admin Logged In State (Gerenciador) -->
             <div id="adminDashboardState" class="space-y-5 hidden">
                 <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 text-center">
                     <p class="text-xs text-emerald-400 font-bold flex items-center justify-center gap-1"><i class="fa-solid fa-circle-check"></i> Identidade Confirmada</p>
                     <p class="text-slate-400 text-[10px] mt-1">Você pode alterar as regras e o design livremente abaixo.</p>
                 </div>
 
-                <!-- Formulário de Alteração da Data -->
                 <div class="space-y-2">
                     <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Nova Data e Hora Limite para Revelação</label>
                     <input type="datetime-local" id="adminNewDateInput" required
@@ -523,11 +477,9 @@
                     <p class="text-[10px] text-slate-500">Se você alterar para uma data no passado, todas as mensagens serão reveladas instantaneamente.</p>
                 </div>
 
-                <!-- Formulário de Alteração do Tema Visual (Design) -->
                 <div class="space-y-2">
                     <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Alterar Tema / Design Visual</label>
                     <div class="grid grid-cols-3 gap-2">
-                        <!-- Clássico -->
                         <label class="cursor-pointer group relative block">
                             <input type="radio" name="adminTreeTheme" value="christmas" class="peer hidden">
                             <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center transition-all hover:border-emerald-600 peer-checked:border-emerald-500 peer-checked:bg-emerald-950/20">
@@ -535,7 +487,6 @@
                                 <h4 class="font-bold text-slate-300 text-[10px]">Clássico</h4>
                             </div>
                         </label>
-                        <!-- Encantada -->
                         <label class="cursor-pointer group relative block">
                             <input type="radio" name="adminTreeTheme" value="enchanted" class="peer hidden">
                             <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center transition-all hover:border-purple-600 peer-checked:border-purple-500 peer-checked:bg-purple-950/20">
@@ -543,7 +494,6 @@
                                 <h4 class="font-bold text-slate-300 text-[10px]">Místico</h4>
                             </div>
                         </label>
-                        <!-- Estelar -->
                         <label class="cursor-pointer group relative block">
                             <input type="radio" name="adminTreeTheme" value="golden" class="peer hidden">
                             <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center transition-all hover:border-yellow-600 peer-checked:border-yellow-500 peer-checked:bg-yellow-950/20">
@@ -554,7 +504,6 @@
                     </div>
                 </div>
 
-                <!-- Alteração de Privacidade/Visibilidade -->
                 <div class="space-y-2">
                     <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Visibilidade dos Recados</label>
                     <div class="grid grid-cols-2 gap-3">
@@ -609,32 +558,31 @@
         const db = getFirestore(app);
         const appId = 'arvore-recados';
 
-        // State variables
+        // Variáveis de estado
         let currentUser = null;
         let currentTreeId = null;
         let currentTreeData = null;
         let ornamentsList = [];
         let isPlacementActive = false;
-        let currentActiveTiers = 3; // Mantido global para cálculo de toque
+        let currentActiveTiers = 3; 
 
-        // Dom Elements
+        // Elementos DOM
         const loadingScreen = document.getElementById('loadingScreen');
         const homeScreen = document.getElementById('homeScreen');
         const treeScreen = document.getElementById('treeScreen');
         
-        // Form & input elements
+        // Elementos de formulários
         const createTreeForm = document.getElementById('createTreeForm');
         const treeOwnerName = document.getElementById('treeOwnerName');
         const treeRevealDate = document.getElementById('treeRevealDate');
         const treeAdminPin = document.getElementById('treeAdminPin');
         
-        // Modals
+        // Elementos Modais
         const modalOrnament = document.getElementById('modalOrnament');
         const modalReadMessage = document.getElementById('modalReadMessage');
         const modalAdmin = document.getElementById('modalAdmin');
         const toastNotification = document.getElementById('toastNotification');
 
-        // Setup base paths (STRICT RULE 1)
         const getTreesCollection = () => collection(db, 'artifacts', appId, 'public', 'data', 'trees');
         const getOrnamentsCollection = () => collection(db, 'artifacts', appId, 'public', 'data', 'ornaments');
 
@@ -681,8 +629,6 @@
             }
         }
 
-        // ==================== FIREBASE DATA FETCH ====================
-
         async function loadTree(treeId) {
             if (!currentUser) return;
             
@@ -699,7 +645,6 @@
                 }
 
                 currentTreeData = treeDocSnap.data();
-
                 const ornamentsRef = getOrnamentsCollection();
                 
                 onSnapshot(ornamentsRef, (snapshot) => {
@@ -709,11 +654,8 @@
                     });
 
                     ornamentsList = allOrnaments.filter(o => o.treeId === currentTreeId);
-                    
-                    // Updates counts
                     document.getElementById('ornamentCountSpan').innerText = ornamentsList.length;
                     
-                    // Renders dynamic responsive layers and places ornaments
                     renderTreeHeaderAndTheme(currentTreeData, ornamentsList.length);
                     renderOrnamentsOnTree(ornamentsList);
                 }, (error) => {
@@ -776,7 +718,6 @@
                 await setDoc(treeDocRef, newTreeData);
 
                 showToast("Sua Árvore Mágica foi gerada com sucesso!", "fa-solid fa-wand-magic-sparkles");
-                
                 setTimeout(() => {
                     window.location.search = `?tree=${newTreeId}`;
                 }, 1500);
@@ -787,34 +728,29 @@
             }
         });
 
-        // ==================== DYNAMIC SVG GENERATOR & GROWING LOGIC ====================
+        // ==================== DYNAMIC SVG GENERATOR & PROPORTIONAL GROWING ====================
 
         function renderTreeHeaderAndTheme(tree, ornamentsCount = 0) {
             document.getElementById('displayTreeName').innerText = `Árvore de ${tree.name}`;
             
-            // Lógica de crescimento da árvore: a cada 8 enfeites ela cresce uma camada (Nível)
             const baseTiers = 3;
             const growthTiers = Math.floor(ornamentsCount / 8);
-            const activeTiers = Math.min(8, baseTiers + growthTiers); // No máximo 8 camadas
-            currentActiveTiers = activeTiers; // Atualiza variável global para as validações físicas de toque
+            const activeTiers = Math.min(8, baseTiers + growthTiers); 
+            currentActiveTiers = activeTiers; 
             
             document.getElementById('treeLevelSpan').innerText = (activeTiers - baseTiers + 1);
-
-            // Ajusta o tamanho físico proporcionalmente: cresce tanto na altura quanto nos lados (max-width)
             const treeContainer = document.getElementById('treeContainer');
             
-            // Crescimento Vertical (Altura)
-            const targetHeight = 400 + (activeTiers * 40); 
+            // Proporções verticais e horizontais perfeitamente calibradas para evitar achatamento
+            const targetHeight = 440 + (activeTiers * 45); 
             treeContainer.style.height = `${targetHeight}px`;
 
-            // Crescimento Lateral (Largura Máxima do Contêiner proporcional)
-            const targetMaxWidth = 360 + (activeTiers * 25);
+            const targetMaxWidth = 300 + (activeTiers * 20);
             treeContainer.style.maxWidth = `${targetMaxWidth}px`;
 
             const glow = document.getElementById('themeLightGlow');
             const svgWrapper = document.getElementById('treeSvgWrapper');
 
-            // Gera o SVG Dinâmico com largura da base ajustável de acordo com o crescimento das camadas
             let svgContent = '';
             
             if (tree.theme === 'christmas') {
@@ -835,53 +771,56 @@
 
         function generatePresentsMarkup() {
             return `
-                <!-- Presentes na base -->
+                <!-- Presentes decorados e delicados na base -->
                 <!-- Presente 1 (Vermelho com laço dourado) -->
-                <rect x="30" y="108" width="11" height="11" fill="#dc2626" rx="1.5" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.3))"/>
-                <line x1="35.5" y1="108" x2="35.5" y2="119" stroke="#fbbf24" stroke-width="1.8"/>
-                <line x1="30" y1="113.5" x2="41" y2="113.5" stroke="#fbbf24" stroke-width="1.8"/>
-                <!-- Laço do Presente 1 -->
-                <path d="M35.5 108 C34 105, 31 106, 35.5 108 C40 106, 37 105, 35.5 108 Z" fill="#fbbf24"/>
+                <rect x="34" y="112" width="10" height="10" fill="#e11d48" rx="1" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.4))"/>
+                <line x1="39" y1="112" x2="39" y2="122" stroke="#fbbf24" stroke-width="1.5"/>
+                <line x1="34" y1="117" x2="44" y2="117" stroke="#fbbf24" stroke-width="1.5"/>
+                <circle cx="39" cy="112" r="1.5" fill="#fbbf24" />
 
-                <!-- Presente 2 (Azul com laço branco) -->
-                <rect x="58" y="110" width="10" height="10" fill="#2563eb" rx="1.5" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.3))"/>
-                <line x1="63" y1="110" x2="63" y2="120" stroke="#ffffff" stroke-width="1.5"/>
-                <line x1="58" y1="115" x2="68" y2="115" stroke="#ffffff" stroke-width="1.5"/>
-                <!-- Laço do Presente 2 -->
-                <path d="M63 110 C61.5 107, 59 108, 63 110 C67 108, 64.5 107, 63 110 Z" fill="#ffffff"/>
+                <!-- Presente 2 (Azul com fita branca) -->
+                <rect x="56" y="113" width="9" height="9" fill="#2563eb" rx="1" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.4))"/>
+                <line x1="60.5" y1="113" x2="60.5" y2="122" stroke="#ffffff" stroke-width="1.2"/>
+                <line x1="56" y1="117.5" x2="65" y2="117.5" stroke="#ffffff" stroke-width="1.2"/>
+                <circle cx="60.5" cy="113" r="1.2" fill="#ffffff" />
 
-                <!-- Presente 3 (Dourado com fita vermelha) -->
-                <rect x="42" y="112" width="8" height="8" fill="#d97706" rx="1" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.3))"/>
-                <line x1="46" y1="112" x2="46" y2="120" stroke="#dc2626" stroke-width="1.2"/>
-                <line x1="42" y1="116" x2="50" y2="116" stroke="#dc2626" stroke-width="1.2"/>
+                <!-- Presente 3 (Verde com fita vermelha) -->
+                <rect x="46" y="114" width="8" height="8" fill="#16a34a" rx="1" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.4))"/>
+                <line x1="50" y1="114" x2="50" y2="122" stroke="#e11d48" stroke-width="1"/>
+                <line x1="46" y1="118" x2="54" y2="118" stroke="#e11d48" stroke-width="1"/>
             `;
         }
 
-        // --- GERADORES DE SVGs MULTI-CAMADAS DINÂMICOS COM CRESCIMENTO VERTICAL ESTÁVEL (SEM RE-ESCALONAR AS CAMADAS ANTIGAS) ---
+        // --- GERADORES DE SVGs MULTI-CAMADAS DINÂMICOS COM CURVAS DELICADAS E ALONGADAS ---
 
         function generateChristmasSVG(tiers) {
             let paths = `
-                <!-- Tronco -->
-                <rect x="46" y="105" width="8" height="15" fill="#4a2c00" rx="1"/>
-                <!-- Vaso -->
-                <path d="M41 120 h18 l-3 -8 h-12 z" fill="#780000" />
+                <!-- Tronco Estilizado -->
+                <rect x="47" y="110" width="6" height="12" fill="#3b2314" rx="1"/>
+                <!-- Vaso de Cerâmica -->
+                <path d="M43 122 h14 l-2 -8 h-10 z" fill="#991b1b" />
             `;
 
-            // Adiciona presentes elegantes na base
             paths += generatePresentsMarkup();
 
+            const startY = 110;
+            const topY = 16;
+            const totalHeight = startY - topY;
+            const tierHeight = totalHeight / tiers;
+
+            // Larguras reduzidas para alongar e deixar a silhueta esbelta
+            const maxBaseWidth = 46 + (tiers * 2.2); 
             let lights = '';
 
-            // Desenha as camadas estavelmente de baixo (Tier 0) para cima.
-            // O fundo da árvore (Tier 0) sempre começa em y = 105 e termina em y = 90.
             for (let i = 0; i < tiers; i++) {
-                const bottomY = 105 - (i * 10);
-                const topY = bottomY - 15;
+                const step = i / (tiers - 1 || 1);
                 
-                // Largura do galho correspondente ao seu índice na pilha
-                const baseW = 72 - (i * 7); 
-                const bottomWidth = Math.max(20, baseW);
-                const topWidth = Math.max(12, bottomWidth - 10);
+                // Distribuição elegante de largura de baixo para cima
+                const bottomWidth = maxBaseWidth - (step * (maxBaseWidth - 18)); 
+                const topWidth = (maxBaseWidth - 8) - (step * (maxBaseWidth - 18));
+
+                const currentBottomY = startY - (i * tierHeight);
+                const currentTopY = startY - ((i + 1) * tierHeight) - 1.5; 
 
                 const leftBottomX = 50 - (bottomWidth / 2);
                 const rightBottomX = 50 + (bottomWidth / 2);
@@ -891,37 +830,33 @@
 
                 const greenTone = i % 2 === 0 ? '#064e3b' : '#047857';
 
-                // Desenha galhos com curvas delicadas e posições estáveis
+                // Curvas delicadas imitando a folhagem caindo organicamente (M-Q-Q-Q-Z)
                 paths += `
-                    <!-- Camada Estável ${i + 1} -->
-                    <path d="M50 ${topY} 
-                             Q${leftTopX + 2} ${topY + 7}, ${leftBottomX} ${bottomY} 
-                             Q50 ${bottomY + 4}, ${rightBottomX} ${bottomY} 
-                             Q${rightTopX - 2} ${topY + 7}, 50 ${topY} Z" 
+                    <!-- Galho Curvo ${i + 1} -->
+                    <path d="M50 ${currentTopY} 
+                             Q${leftTopX + 1.5} ${currentTopY + (tierHeight * 0.45)}, ${leftBottomX} ${currentBottomY} 
+                             Q50 ${currentBottomY + 2}, ${rightBottomX} ${currentBottomY} 
+                             Q${rightTopX - 1.5} ${currentTopY + (tierHeight * 0.45)}, 50 ${currentTopY} Z" 
                           fill="${greenTone}" 
-                          filter="drop-shadow(0 2px 4px rgba(0,0,0,0.2))"/>
+                          filter="drop-shadow(0 2px 3px rgba(0,0,0,0.18))"/>
                 `;
 
-                // Pequenas luzes coloridas fixas em cada galho
+                // Pequenas luzes natalinas piscantes nas extremidades
                 const lightClass = i % 3 === 0 ? 'light-red' : (i % 3 === 1 ? 'light-gold' : 'light-blue');
-                const lightColor = i % 3 === 0 ? '#ef4444' : (i % 3 === 1 ? '#fbbf24' : '#3b82f6');
+                const lightColor = i % 3 === 0 ? '#f43f5e' : (i % 3 === 1 ? '#fbbf24' : '#3b82f6');
                 lights += `
-                    <circle cx="${leftBottomX + 3}" cy="${bottomY - 1}" r="1.5" fill="${lightColor}" class="${lightClass}" />
-                    <circle cx="${rightBottomX - 3}" cy="${bottomY - 1}" r="1.5" fill="${lightColor}" class="${lightClass}" />
-                    <circle cx="50" cy="${bottomY + 1.5}" r="1.5" fill="${lightColor}" class="${lightClass}" />
+                    <circle cx="${leftBottomX + 2.5}" cy="${currentBottomY - 0.5}" r="1.3" fill="${lightColor}" class="${lightClass}" />
+                    <circle cx="${rightBottomX - 2.5}" cy="${currentBottomY - 0.5}" r="1.3" fill="${lightColor}" class="${lightClass}" />
+                    <circle cx="50" cy="${currentBottomY + 0.6}" r="1.3" fill="${lightColor}" class="${lightClass}" />
                 `;
             }
 
-            // O topo da estrela dinamicamente se ajusta à nova altura máxima da árvore
-            const highestTopY = 105 - ((tiers - 1) * 10) - 15;
-            const starCenterY = highestTopY - 4;
-
             paths += `
-                <path d="M50 ${starCenterY + 12} Q55 ${starCenterY + 30} 40 ${starCenterY + 50} T60 90" fill="none" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="1 3" class="animate-pulse" />
+                <path d="M50 25 Q53 50 45 70 T55 95" fill="none" stroke="#fbbf24" stroke-width="0.5" stroke-dasharray="1 3" class="animate-pulse" />
                 ${lights}
-                <!-- Estrela do Topo Dinâmica -->
-                <g fill="#f59e0b" filter="drop-shadow(0 0 8px #f59e0b)" transform="translate(0, ${starCenterY - 10})">
-                    <path d="M50 4 L52 9 L58 9 L53.5 12 L55 17.5 L50 14 L45 17.5 L46.5 12 L42 9 L48 9 Z" />
+                <!-- Estrela Cadente Delicada -->
+                <g fill="#fbbf24" filter="drop-shadow(0 0 6px #fbbf24)">
+                    <path d="M50 5 L51.8 9 L56 9 L52.6 11.5 L53.8 15.5 L50 13 L46.2 15.5 L47.4 11.5 L44 9 L48.2 9 Z" />
                 </g>
             `;
 
@@ -930,49 +865,48 @@
 
         function generateEnchantedSVG(tiers) {
             let paths = `
-                <!-- Tronco Místico -->
-                <path d="M44 105 Q47 115 41 121 h18 Q53 115 56 105 z" fill="#2d1b4e"/>
+                <!-- Tronco Estilizado -->
+                <path d="M46 110 Q50 116 44 122 h12 Q50 116 54 110 z" fill="#1e1135"/>
             `;
 
             paths += generatePresentsMarkup();
 
+            const startY = 110;
+            const topY = 18;
+            const totalHeight = startY - topY;
+            const tierHeight = totalHeight / tiers;
+
+            // Largura máxima verticalmente esbelta para a cúpula mística
+            const maxBaseRadiusX = 20 + (tiers * 1.5); 
             let lights = '';
 
             for (let i = 0; i < tiers; i++) {
-                const bottomY = 105 - (i * 10);
-                const radiusY = 8;
-                const centerY = bottomY - radiusY;
+                const step = i / (tiers - 1 || 1);
                 
-                const baseW = 34 - (i * 3);
-                const radiusX = Math.max(10, baseW);
+                const radiusX = maxBaseRadiusX - (step * (maxBaseRadiusX - 10)); 
+                const radiusY = (tierHeight / 2) + 2.5;
+                const centerY = startY - (i * tierHeight) - (radiusY / 2);
 
                 const purpleTone = i % 2 === 0 ? '#3b0764' : '#581c87';
 
                 paths += `
-                    <!-- Camada Mística Estável ${i+1} -->
-                    <path d="M${50 - radiusX} ${centerY} 
-                             Q50 ${centerY - radiusY}, ${50 + radiusX} ${centerY} 
-                             Q50 ${centerY + radiusY}, ${50 - radiusX} ${centerY} Z" 
-                          fill="${purpleTone}" 
-                          filter="drop-shadow(0 2px 5px rgba(0,0,0,0.25))"/>
+                    <!-- Camada Mística Suave ${i+1} -->
+                    <ellipse cx="50" cy="${centerY}" rx="${radiusX}" ry="${radiusY}" fill="${purpleTone}" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.22))"/>
                 `;
 
+                const lightColor = i % 2 === 0 ? '#38bdf8' : '#fbbf24';
                 const lightClass = i % 2 === 0 ? 'light-blue' : 'light-gold';
-                const lightColor = i % 2 === 0 ? '#38bdf8' : '#eab308';
                 lights += `
-                    <circle cx="${50 - radiusX + 3}" cy="${centerY}" r="1.3" fill="${lightColor}" class="${lightClass}" />
-                    <circle cx="${50 + radiusX - 3}" cy="${centerY}" r="1.3" fill="${lightColor}" class="${lightClass}" />
+                    <circle cx="${50 - radiusX + 2.5}" cy="${centerY}" r="1.2" fill="${lightColor}" class="${lightClass}" />
+                    <circle cx="${50 + radiusX - 2.5}" cy="${centerY}" r="1.2" fill="${lightColor}" class="${lightClass}" />
                 `;
             }
 
-            const highestTopY = 105 - ((tiers - 1) * 10) - 16;
-            const starCenterY = highestTopY - 4;
-
             paths += `
-                <path d="M50 ${starCenterY + 12} Q30 ${starCenterY + 30} 70 ${starCenterY + 55} T35 95" fill="none" stroke="#38bdf8" stroke-width="0.5" stroke-dasharray="2 3" class="animate-pulse" />
+                <path d="M50 18 Q35 48 65 72 T38 102" fill="none" stroke="#38bdf8" stroke-width="0.5" stroke-dasharray="1.5 3" class="animate-pulse" />
                 ${lights}
-                <g fill="#c084fc" filter="drop-shadow(0 0 12px #c084fc)" transform="translate(0, ${starCenterY - 8})">
-                    <circle cx="50" cy="8" r="4"/>
+                <g fill="#c084fc" filter="drop-shadow(0 0 10px #c084fc)">
+                    <circle cx="50" cy="8" r="3.5"/>
                     <path d="M50 2 L50 14 M44 8 L56 8" stroke="#c084fc" stroke-width="0.8"/>
                 </g>
             `;
@@ -982,20 +916,26 @@
 
         function generateGoldenSVG(tiers) {
             let paths = `
-                <!-- Tronco Dourado -->
-                <rect x="47" y="103" width="6" height="18" fill="#78350f" rx="1"/>
+                <rect x="47.5" y="108" width="5" height="14" fill="#5c2d12" rx="0.5"/>
             `;
 
             paths += generatePresentsMarkup();
 
+            const startY = 110;
+            const topY = 16;
+            const totalHeight = startY - topY;
+            const tierHeight = totalHeight / tiers;
+
+            // Largura esbelta para árvore estelar dourada
+            const maxBaseWidth = 38 + (tiers * 1.8); 
             let lights = '';
 
             for (let i = 0; i < tiers; i++) {
-                const bottomY = 105 - (i * 10);
-                const topY = bottomY - 15;
+                const step = i / (tiers - 1 || 1);
                 
-                const baseW = 68 - (i * 6);
-                const width = Math.max(18, baseW);
+                const width = maxBaseWidth - (step * (maxBaseWidth - 14));
+                const currentBottomY = startY - (i * tierHeight);
+                const currentTopY = startY - ((i + 1) * tierHeight) - 1.5;
 
                 const leftX = 50 - (width / 2);
                 const rightX = 50 + (width / 2);
@@ -1003,37 +943,34 @@
                 const amberTone = i % 2 === 0 ? '#b45309' : '#d97706';
 
                 paths += `
-                    <!-- Camada Dourada Estável ${i+1} -->
-                    <path d="M50 ${topY} 
-                             Q${leftX + 4} ${topY + 4}, ${leftX} ${bottomY} 
-                             Q50 ${bottomY + 2}, ${rightX} ${bottomY} 
-                             Q${rightX - 4} ${topY + 4}, 50 ${topY} Z" 
-                      fill="${amberTone}" 
-                      filter="drop-shadow(0 2px 6px rgba(180,83,9,0.25))"/>
+                    <!-- Camada Estelar Curvada ${i+1} -->
+                    <path d="M50 ${currentTopY} 
+                             Q${leftX + 2} ${currentTopY + (tierHeight * 0.4)}, ${leftX} ${currentBottomY} 
+                             Q50 ${currentBottomY + 1.5}, ${rightX} ${currentBottomY} 
+                             Q${rightX - 2} ${currentTopY + (tierHeight * 0.4)}, 50 ${currentTopY} Z" 
+                          fill="${amberTone}" 
+                          filter="drop-shadow(0 2px 4px rgba(180,83,9,0.22))"/>
                 `;
 
                 const lightClass = i % 2 === 0 ? 'light-gold' : 'light-blue';
                 lights += `
-                    <circle cx="${leftX + 2}" cy="${bottomY}" r="1.3" fill="#fffbeb" class="${lightClass}" />
-                    <circle cx="${rightX - 2}" cy="${bottomY}" r="1.3" fill="#fffbeb" class="${lightClass}" />
+                    <circle cx="${leftX + 2}" cy="${currentBottomY}" r="1.2" fill="#fffbeb" class="${lightClass}" />
+                    <circle cx="${rightX - 2}" cy="${currentBottomY}" r="1.2" fill="#fffbeb" class="${lightClass}" />
                 `;
             }
 
-            const highestTopY = 105 - ((tiers - 1) * 10) - 15;
-            const starCenterY = highestTopY - 4;
-
             paths += `
-                <path d="M50 ${starCenterY + 12} L28 100 M50 ${starCenterY + 12} L72 100" fill="none" stroke="#ffffff" stroke-width="0.4" stroke-dasharray="2 4" opacity="0.4"/>
+                <path d="M50 22 L35 105 M50 22 L65 105" fill="none" stroke="#ffffff" stroke-width="0.4" stroke-dasharray="1 3" opacity="0.35"/>
                 ${lights}
-                <g fill="#fffbeb" filter="drop-shadow(0 0 15px #fef08a)" transform="translate(0, ${starCenterY - 11})">
-                    <polygon points="50,1 53,8 61,8 54,13 57,21 50,16 43,21 46,13 39,8 47,8" />
+                <g fill="#fffbeb" filter="drop-shadow(0 0 12px #fef08a)">
+                    <polygon points="50,2 52.5,8.5 59.5,8.5 53.5,12.5 56,19 50,15 44,19 46.5,12.5 40.5,8.5 47.5,8.5" />
                 </g>
             `;
 
             return `<svg class="w-full h-full text-amber-500" viewBox="0 0 100 125" fill="currentColor">${paths}</svg>`;
         }
 
-        // Renders visual ornaments absolutely inside the tree wrapper based on percentages
+        // Renderiza enfeites flutuantes perfeitamente ancorados
         function renderOrnamentsOnTree(ornaments) {
             const wrapper = document.getElementById('ornamentsWrapper');
             wrapper.innerHTML = '';
@@ -1171,43 +1108,23 @@
             showToast("Agora, toque/clique no local desejado na árvore!", "fa-solid fa-arrow-pointer");
         });
 
-        // Função de validação precisa e estável de acordo com as camadas empilhadas bottom-up
         function isValidTreePosition(x, y, theme, tiers) {
-            // Copa da árvore começa abaixo do topo dinâmico e vai até a base fixa (y=105)
-            if (y < 5 || y > 105) return false;
+            // Copa da árvore começa em y=14 e termina em y=110
+            if (y < 14 || y > 110) return false;
 
-            // Percorre todas as camadas ativas da base para cima buscando se o toque atingiu alguma delas
-            for (let i = 0; i < tiers; i++) {
-                const bottomY = 105 - (i * 10);
-                const topY = bottomY - 15;
+            // Largura máxima proporcional das copas esbeltas
+            let maxHalfWidth = (46 + (tiers * 2.2)) / 2; // Christmas
+            if (theme === 'enchanted') maxHalfWidth = 20 + (tiers * 1.5);
+            if (theme === 'golden') maxHalfWidth = (38 + (tiers * 1.8)) / 2;
 
-                // Verifica se o toque está na faixa de altura desta camada
-                if (y >= topY && y <= bottomY) {
-                    // Largura base da camada estável
-                    let baseW = 72 - (i * 7);
-                    if (theme === 'enchanted') baseW = 68 - (i * 6);
-                    if (theme === 'golden') baseW = 68 - (i * 6);
+            // Interpolação linear vertical (Formato cônico elegante)
+            const t = (y - 14) / (110 - 14);
+            const currentHalfWidth = 4 + (maxHalfWidth - 4) * t; 
 
-                    // Interpolação linear da largura triangular de acordo com a altura interna da camada
-                    const t = (y - topY) / 15; // 0 no topo da camada, 1 na base
-                    const currentW = (baseW - 10) + (t * 10);
-
-                    // Verifica se o X está dentro da borda horizontal desta camada
-                    if (x >= 50 - currentW / 2 && x <= 50 + currentW / 2) {
-                        return true;
-                    }
-                }
-            }
-
-            // Permite colocar enfeites bem próximo do tronco se o Y estiver na base
-            if (y >= 95 && y <= 105 && x >= 40 && x <= 60) {
-                return true;
-            }
-
-            return false;
+            // Confirma se o X está dentro da borda horizontal
+            return (x >= 50 - currentHalfWidth && x <= 50 + currentHalfWidth);
         }
 
-        // Click handler on actual Tree physical canvas bounds
         document.getElementById('treeContainer').addEventListener('click', async (e) => {
             if (!isPlacementActive) return;
 
@@ -1216,16 +1133,15 @@
             const yVal = ((e.clientY - rect.top) / rect.height) * 100;
 
             const theme = currentTreeData ? currentTreeData.theme : 'christmas';
-            const tiers = currentActiveTiers; // Lê as camadas atuais calculadas em tempo real
+            const tiers = currentActiveTiers; 
 
-            // Validação de segurança adaptada para crescimento dinâmico vertical/lateral estável
             if (!isValidTreePosition(xVal, yVal, theme, tiers)) {
                 showToast("Por favor, clique nos galhos da árvore para pendurar seu enfeite!", "fa-solid fa-tree");
-                return; // Mantém o estado ativo
+                return; 
             }
 
             const boundedX = Math.min(Math.max(xVal, 5), 95);
-            const boundedY = Math.min(Math.max(yVal, 10), 90);
+            const boundedY = Math.min(Math.max(yVal, 10), 95);
 
             isPlacementActive = false;
             
@@ -1375,7 +1291,7 @@
                     revealMode: newRevealMode
                 });
 
-                showToast("Configurações da árvore updated!", "fa-solid fa-circle-check");
+                showToast("Configurações atualizadas!", "fa-solid fa-circle-check");
                 closeAllModals();
 
             } catch (err) {
