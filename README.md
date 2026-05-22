@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -126,7 +125,7 @@
                     <i class="fa-solid fa-wand-magic-sparkles text-xl"></i> Cultive sua Árvore
                 </h2>
                 <p class="text-slate-300 text-sm leading-relaxed mb-6">
-                    Você entrou no painel de criação! Crie um espaço mágico online onde seus amigos podem pendurar presentes, cartinhas e recados de carinho. Você define o dia exato em que os recados serão revelados! Até lá, as cartinhas ficam guardadas a sete chaves.
+                    Você entrou no painel de criação! Crie um space mágico online onde seus amigos podem pendurar presentes, cartinhas e recados de carinho. Você define o dia exato em que os recados serão revelados! Até lá, as cartinhas ficam guardadas a sete chaves.
                 </p>
 
                 <form id="createTreeForm" class="space-y-5">
@@ -741,11 +740,11 @@
             document.getElementById('treeLevelSpan').innerText = (activeTiers - baseTiers + 1);
             const treeContainer = document.getElementById('treeContainer');
             
-            // Proporções verticais e horizontais perfeitamente calibradas para evitar achatamento
-            const targetHeight = 440 + (activeTiers * 45); 
+            // Proporções verticais e horizontais perfeitamente calibradas e ampliadas para Nível 1
+            const targetHeight = 520 + (activeTiers * 45); 
             treeContainer.style.height = `${targetHeight}px`;
 
-            const targetMaxWidth = 300 + (activeTiers * 20);
+            const targetMaxWidth = 360 + (activeTiers * 20);
             treeContainer.style.maxWidth = `${targetMaxWidth}px`;
 
             const glow = document.getElementById('themeLightGlow');
@@ -808,8 +807,8 @@
             const totalHeight = startY - topY;
             const tierHeight = totalHeight / tiers;
 
-            // Larguras reduzidas para alongar e deixar a silhueta esbelta
-            const maxBaseWidth = 46 + (tiers * 2.2); 
+            // Largura inicial ampliada para o Nível 1 ter mais espaço de galhos
+            const maxBaseWidth = 52 + (tiers * 2.2); 
             let lights = '';
 
             for (let i = 0; i < tiers; i++) {
@@ -876,8 +875,8 @@
             const totalHeight = startY - topY;
             const tierHeight = totalHeight / tiers;
 
-            // Largura máxima verticalmente esbelta para a cúpula mística
-            const maxBaseRadiusX = 20 + (tiers * 1.5); 
+            // Largura máxima verticalmente esbelta ampliada para a cúpula mística
+            const maxBaseRadiusX = 24 + (tiers * 1.5); 
             let lights = '';
 
             for (let i = 0; i < tiers; i++) {
@@ -926,8 +925,8 @@
             const totalHeight = startY - topY;
             const tierHeight = totalHeight / tiers;
 
-            // Largura esbelta para árvore estelar dourada
-            const maxBaseWidth = 38 + (tiers * 1.8); 
+            // Largura ampliada para árvore estelar dourada
+            const maxBaseWidth = 44 + (tiers * 1.8); 
             let lights = '';
 
             for (let i = 0; i < tiers; i++) {
@@ -1112,10 +1111,10 @@
             // Copa da árvore começa em y=14 e termina em y=110
             if (y < 14 || y > 110) return false;
 
-            // Largura máxima proporcional das copas esbeltas
-            let maxHalfWidth = (46 + (tiers * 2.2)) / 2; // Christmas
-            if (theme === 'enchanted') maxHalfWidth = 20 + (tiers * 1.5);
-            if (theme === 'golden') maxHalfWidth = (38 + (tiers * 1.8)) / 2;
+            // Largura máxima proporcional das copas esbeltas de base aumentada
+            let maxHalfWidth = (52 + (tiers * 2.2)) / 2; // Christmas
+            if (theme === 'enchanted') maxHalfWidth = 24 + (tiers * 1.5);
+            if (theme === 'golden') maxHalfWidth = (44 + (tiers * 1.8)) / 2;
 
             // Interpolação linear vertical (Formato cônico elegante)
             const t = (y - 14) / (110 - 14);
